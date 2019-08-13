@@ -11,12 +11,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-        target: 'https://cxc.umdemo.cn', //是你要请求后台的域名和端口
+      '/': {
+        target: 'https://cxc.umdemo.cn/cgi',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''     //路径重写，也可以写成 '^/api': 'http://f.apiplus.cn'
-        }
       }
     },
 
