@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <el-form-item label="中央厨房名称" prop="name">
       <el-input v-model="registerForm.name" placeholder="请填写中央厨房名称"></el-input>
     </el-form-item>
@@ -74,18 +75,15 @@
 <script>
 
     import {mapState} from 'vuex';
-    import {getDistrictList, getCityList, locationToAddress} from '@/api/map';
-    // import 'https://map.qq.com/api/js?v=2.exp&key=37HBZ-AZPC6-PWNSB-MQHVE-F5QZO-MYBH4'
-    // import 'https://apis.map.qq.com/tools/geolocation/min?key=37HBZ-AZPC6-PWNSB-MQHVE-F5QZO-MYBH4&referer=超小厨-web'
-
+    import {getDistrictList, getCityList, locationToAddress, } from '@/api/map';
+    let map, center, info, mark;
     export default {
         name: 'infoRegistration',
         data() {
             return {
                 areaJson: [],
-                // workArea: ['410000', '411500', '411502'],
                 workArea: [],
-                // CityList: [],
+                workAreaed: '',
                 imageUrl: '',
                 lat: 0,
                 lng: 0,
@@ -102,163 +100,116 @@
             handleImg(file, files) {
                 this.imageUrl = URL.createObjectURL(file.raw);
             },
-            // 地图初始化     ---- 有待优化
-            init() {
-                // this.workArea=["410000", "410100", "410105"];
-                this.registerForm.latitude = this.lat;
-                this.registerForm.longitude = this.lng;
-                let that = this;
-                this.getMap()
-
-            },
-            //  修改map
-            getMap() {
-                let center = new qq.maps.LatLng(this.lat, this.lng);
-                let map = new qq.maps.Map(document.getElementById('container'), {
-                    center,
+            // 地图初始化
+            async init() {
+                await this.getLoaction();
+                map = new qq.maps.Map(document.getElementById('container'), {
                     zoom: 13,
                 });
-                // 将经纬度转换成对应的地址
-                let geocoder = new qq.maps.Geocoder();
-                geocoder.getAddress(center);
-                geocoder.setComplete((result) => {
-                    // 地址提示窗口
-                    let info = new qq.maps.InfoWindow({
-                        map,
-                    });
-                    info.open();
-                    let loc = result.detail.addressComponents;
-                    // this.workArea[0] = loc['province']
-                    // this.workArea[1] = loc['city']
-                    // this.workArea[2] = loc['district']
-                    // this.address = loc['street'] + loc['streetNumber']
-                    // console.log( this.CityList+"==")
-                    let a1, a2, a3;
-                    this.areaJson.filter(item => {
-
-                        if (item.label == loc.province) {
-                            a1 = item.value;
-                            console.log(this)
-                            this.workArea.splice(0, 0, a1);
-                            // this.workArea[0] = '410000'
-                            item.children.filter(itemed => {
-                                if (itemed.label == loc.city) {
-                                    a2 = itemed.value;
-                                    // this.workArea.splice(1, 1, a2);
-                                    // this.workArea[1] = '411500'
-                                    //c
-                                    itemed.children.filter(end => {
-                                        if (end.label == loc.district) {
-                                            a3 = end.value;
-                                            // this.workArea.push(a3)
-                                            // this.workArea[1] = '411502'
-                                            // console.log(this.workArea)
-                                            // this.workArea.splice(2, 2, a3);
-                                            // this.$set(this.workArea,['410000', '411500', '411502'])
-                                            // this.workArea = ['410000', '411500', '411502']
-                                            // console.log(this.workArea)
-                                        }
-                                    })
-                                }
-                            })
-                            // this.workArea.splice(0, 1, '410000');
-                        }
-                        // if (item.fullname == loc.city) {
-                        //     a2 = item.code
-                        //     // this.workArea.splice(1, 2, '410100');
-                        // }
-                        //
-                        // if(item.fullname == loc.district){
-                        //     a3 = item.code;
-                        //
-                        // }
-
-                        // let a1 = item.fullname == loc['province'] ? item.code : this.workArea[0];
-
-                        // this.workArea[1] = item.fullname == loc['city'] ? item.code : this.workArea[1];
-                        // this.workArea.splice(1,2,a1)
-
-                        // console.log(rs)
-                        // that.workArea[2] = item.fullname == loc['district'] ? item.code : this.workArea[2];
-                    });
-                    // console.log(this.areaJson)
-                    // this.getDistrict().then((res) => {
-                    //     let a3 = res.address_component.street_number;
-                    //     // this.workArea.splice(2, 3, '410105');
-                    //
-                    //     // this.workArea=["410000", "410100", ""];res.ad_info.adcode
-                    // });
-                    // this.workArea=["410000", "410100", "410105"];
-
-
-                    info.setContent(`<div style="width:200px;height:70px;line-height: normal;font-weight: normal">${
-                        result.detail.address}</div>`);
-                    info.setPosition(result.detail.location);
-                });
-
-                const mark = new qq.maps.Marker({
-                    position: center,
-                    map,
-                });
+                this.getMap()
                 // 绑定单击事件添加参数
                 qq.maps.event.addListener(map, 'click', (event) => {
+                    info.close()
+                    mark.setVisible(false)
                     this.lat = event.latLng.getLat();
                     this.lng = event.latLng.getLng();
                     this.getMap();
                 });
             },
-            // 获取县的 code
-            // getDistrict() {
-            //     // const rs = await locationToAddress(this.lat, this.lng);
-            //     let latLng = new qq.maps.LatLng(this.lat, this.lng);
-            //     console.log(latLng)
-            //     // return rs;
-            //
-            // },
+            //  修改map
+            async getMap() {
+                let that = this
+                center = new qq.maps.LatLng(this.lat, this.lng);
+                map.setCenter(center)
+                this.registerForm.latitude = this.lat;
+                this.registerForm.longitude = this.lng;
+                // 将经纬度转换成对应的地址
+                let geocoder = new qq.maps.Geocoder();
+                geocoder.getAddress(center);
+                await geocoder.setComplete(result => {
+                    this.workArea = [];
+                    if (result) {
+                        let loc = result.detail.addressComponents;
+                        // 地址提示窗口
+                        info = new qq.maps.InfoWindow({
+                            map,
+                        });
+                        info.open();
+                        // 获取省、市、县和详细地址
+                        this.areaJson.filter(item => {
+                            if (item.label == loc.province) {
+                                that.workArea.splice(0, 0, item.value);
+                                item.children.filter(itemed => {
+                                    if (itemed.label == loc.city) {
+                                        that.workArea.splice(1, 1, itemed.value);
+                                        itemed.children.filter(end => {
+                                            if (end.label == loc.district) {
+                                                //详细地址
+                                                let id = result.detail.address.indexOf(loc.district)
+                                                this.address = result.detail.address.substring(id + loc.district.length)
+                                                that.workArea.splice(2, 2, end.value);
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        });
+                        info.setContent(`<div style="width:200px;height:70px;line-height: normal;font-weight: normal">${
+                            result.detail.address}</div>`);
+                        info.setPosition(result.detail.location);
+                    } else {
+                        return;
+                    }
+                });
+                mark = new qq.maps.Marker({
+                    position: center,
+                    map,
+                });
+
+            },
+
             // 地址改变  将code转换为地址
-            async handleChange(e) {
-                const areaJson = this.areaJson;
+            handleChange(e) {
+                console.log(e)
                 // 省
-                // console.log(this.workArea)
-                await areaJson.filter((item, index) => {
+                this.areaJson.filter((item, index) => {
                     if (item.value == e[0]) {
-                        this.workArea[0] = item.label;
+                        this.workAreaed += item.label;
                         // 市
-                        areaJson[index].children.filter((items, indexed) => {
+                        item.children.filter((items, indexed) => {
                             if (items.value == e[1]) {
-                                this.workArea[1] = items.label;
+                                this.workAreaed += items.label;
                                 // 县
                                 if (e.length == 3) {
-                                    areaJson[index].children[indexed].children.filter((itemed) => {
-                                        this.workArea[2] = itemed.value == e[2] ? itemed.label : this.workArea[2];
+                                    items.children.filter((itemed) => {
+                                        this.workAreaed += itemed.value == e[2] ? itemed.label : '';
                                     });
                                 }
                             }
                         });
                     }
                 });
-                this.changeLocation();
             },
             // 将详细地址转换为 经纬度
             changeLocation() {
-                console.log(this)
                 //   获取位置的经纬度
-                const geocoder = new qq.maps.Geocoder();
-                geocoder.getLocation(this.workArea.toString() + this.address);
+                let that = this;
+                let geocoder = new qq.maps.Geocoder();
+                geocoder.getLocation(this.workAreaed + this.address);
                 geocoder.setComplete((res) => {
                     this.lat = res.detail.location.lat;
                     this.lng = res.detail.location.lng;
-                    this.init();
+                    info.close()
+                    mark.setVisible(false)
+                    this.getMap(that);
                 });
             },
             // 获取用户地理位置的经纬度
-            getLoaction() {
-                let that = this
+            getLoaction(that) {
                 const geolocation = new qq.maps.Geolocation('37HBZ-AZPC6-PWNSB-MQHVE-F5QZO-MYBH4', '超小厨-web');
                 geolocation.getIpLocation((position) => {
                     this.lat = position.lat;
                     this.lng = position.lng;
-                    this.init();
                 }, (err) => {
                     console.log(`地理位置获取失败！${err}`);
                 });
@@ -266,11 +217,9 @@
 
         },
         async mounted() {
-            console.log(this.$el.textContent)
             this.imageUrl = this.registerForm.cover;
             this.areaJson = await getDistrictList();
-            // this.CityList = await getCityList();
-            this.getLoaction();
+            this.init();
 
         },
         computed: {
