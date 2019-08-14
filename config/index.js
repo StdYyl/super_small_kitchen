@@ -11,10 +11,21 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/': {
+      "/img": {
+        target: "https://image.chaoxiaochu.com", //设置调用的接口域名和端口
+        changeOrigin: true,
+        pathRewrite: {
+          '^/img': ''
+        }
+      },
+      '/api': {
         target: 'https://cxc.umdemo.cn/cgi',
         changeOrigin: true,
-      }
+        pathRewrite: {
+          '^/api': ''     //路径重写，也可以写成 '^/api': 'http://f.apiplus.cn'
+        }
+      },
+
     },
 
     // Various Dev Server settings
