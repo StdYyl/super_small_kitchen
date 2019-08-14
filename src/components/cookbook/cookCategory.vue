@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <breadcrumb></breadcrumb>
     <div class="categoryTable">
       <el-button style="float: right" type="primary">菜谱分类添加</el-button>
       <div style="clear: both;"></div>
@@ -76,8 +77,10 @@
 
 <script>
   import {getCookBookList} from '@/api/cookBook';
+  import breadcrumb from '@/components/currency/breadcrumb';
   export default {
     name:"cookCategory",
+    components:{breadcrumb},
     data() {
       return {
         tableData: []
@@ -93,7 +96,6 @@
           this.$set(this.tableData[i], 'inputStatus', false);
         }
       });
-      console.log(this.$route.matched)
     }
   }
 </script>
