@@ -17,15 +17,6 @@ export default new Router({
       name: 'cookCategory',
       meta: {title:'菜谱分类'},
       component: cookCategory,
-      redirect: false,
-      children:[
-        {
-          path: 'cookCategory2',
-          name: 'cookCategory2',
-          meta: {title:'菜谱分类2'},
-          component: cookCategory,
-        }
-      ]
     }
   ],
 });
