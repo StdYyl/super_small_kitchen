@@ -50,12 +50,12 @@
     <div class="menu_wrapper">
       <dl>
         <dt>
-          <router-link to="" tag="a">
-            <svg-icon icon-class="nested"></svg-icon>
-            <span>配置管理</span>
-          </router-link>
+          <svg-icon icon-class="nested"></svg-icon>
+          <span>配置管理</span>
         </dt>
-        <dd>菜谱分类</dd>
+        <dd>
+          <router-link to="/dashboard/cookbook/cookCategory" tag="a">菜谱分类</router-link>
+        </dd>
         <dd>商品分类</dd>
         <dd>指令管理</dd>
       </dl>

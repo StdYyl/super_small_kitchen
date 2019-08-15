@@ -13,3 +13,5 @@ export default new Vuex.Store({
   actions,
   getters,
 });
+
+Vue.use(Vuex);

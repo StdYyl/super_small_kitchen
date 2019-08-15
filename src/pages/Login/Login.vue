@@ -26,7 +26,7 @@
                       <svg-icon icon-class="eye"></svg-icon>
                     </span>
                 </el-form-item>
-                <router-link to="/rigister" tag="p" class="store_register">商户注册</router-link>
+                <router-link to="/register" tag="p" class="store_register">商户注册</router-link>
               </div>
             </el-form>
             <div class="btn_container">

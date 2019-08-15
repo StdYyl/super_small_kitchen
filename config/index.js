@@ -19,7 +19,7 @@ module.exports = {
         }
       },
       '/api': {
-        target: 'https://cxc.umdemo.cn/cgi',
+        target: 'https://cxc.umdemo.cn/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''     //路径重写，也可以写成 '^/api': 'http://f.apiplus.cn'

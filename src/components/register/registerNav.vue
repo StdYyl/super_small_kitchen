@@ -4,13 +4,14 @@
       <div class="icon_bd">
         <ul>
           <li v-for="(item,id) in ls">
-              <div :class="index[id+1]>=0?'line line_on':'line'"></div>
-              <div class="icond">
-                <div class="icons" :style="(id+1)==ls.length?'left:10px;width:70px':''">
-                  <div :class=" (id+1)==index.length?'ic ic_on':'ic'" :style="index[id]>=0?'background:#6698ff':''"></div>
-                </div>
-                <span :style="(id+1)==ls.length?'left:-35px':''">{{id+1}}.{{item}}</span>
+            <div :class="index[id+1]>=0?'line line_on':'line'">
+            </div><div class="icond">
+              <div class="icons" :style="(id+1)==ls.length?'left:10px;width:70px':''">
+                <div :class=" (id+1)==index.length?'ic ic_on':'ic'"
+                     :style="index[id]>=0?'background:#6698ff':''"></div>
               </div>
+              <span :style="(id+1)==ls.length?'left:-35px':''">{{id+1}}.{{item}}</span>
+            </div>
           </li>
         </ul>
       </div>
