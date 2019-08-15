@@ -6,4 +6,6 @@ export function requested(url,method='get'){
 
 axios.interceptors.response.use((res) => {
   return res;
+},err=>{
+  console.log(err)
 })

@@ -12,7 +12,7 @@ import MenuManage from '../components/OperationManager/MenuManage';
 import StoreAdd from '../components/CooperationManager/AddStore';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
-import RegisterNav from '../view/register';
+import RegisterNav from '../pages/Register/register';
 import CookCategory from '../components/cookbook/cookCategory';
 import BasicInformation from '../components/register/infoRegistration';
 

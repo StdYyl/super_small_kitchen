@@ -7,11 +7,11 @@ export async function getDistrictList() {
 }
 // 搜索行政区域  locationToAddress
 export async function getCityList() {
-  let res = await requested('/map/cityList')
+  let res = await requested('api/cgi/map/cityList')
   return res.data.body;
 }
 // 坐标转换
 export async function locationToAddress(lat, lng) {
-  let res = await requested(`/map/locationToAddress?latitude=${lat}&longitude=${lng}`)
+  let res = await requested(`api/cgi/map/locationToAddress?latitude=${lat}&longitude=${lng}`)
   return res.data.body;
 }
