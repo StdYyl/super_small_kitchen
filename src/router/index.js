@@ -13,7 +13,11 @@ import StoreAdd from '../components/CooperationManager/AddStore';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
 import RegisterNav from '../pages/Register/register';
-import CookCategory from '../components/cookbook/cookCategory';
+import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
+import CookCategory from '../components/configManage/cookCategory';
+import CategoryAdd from '../components/configManage/categoryAdd';
+import CategoryEdit from '../components/configManage/categoryEdit';
+import CategoryChild from '../components/configManage/categoryChild';
 import BasicInformation from '../components/register/infoRegistration';
 
 Vue.use(VueRouter);
@@ -35,6 +39,7 @@ export default new VueRouter({
     {
       path: '/dashboard',
       component: DashBoard,
+      meta:{title:'首页'},
       children: [
         {
           path: 'main_page',
@@ -77,10 +82,35 @@ export default new VueRouter({
           component: MenuAdd,
         },
         {
-          path: 'cookbook/cookCategory',
-          name: 'cookCategory',
+          path: 'configManage/cookCategory',
           meta: { title: '菜谱分类' },
-          component: CookCategory,
+          component: CookCategoryIndex,
+          children:[
+            {
+              path: '',
+              name: 'cookCategory',
+              meta: { title: '菜谱分类' },
+              component: CookCategory,
+            },
+            {
+              path: 'add/:id',
+              name: 'categoryAdd',
+              meta: { title: '分类添加' },
+              component: CategoryAdd,
+            },
+            {
+              path: 'edit/:id',
+              name: 'categoryEdit',
+              meta: { title: '分类编辑' },
+              component: CategoryEdit,
+            },
+            {
+              path: 'child/:id',
+              name: 'categoryAdChild',
+              meta: { title: '子分类列表' },
+              component: CategoryChild,
+            },
+          ],
         },
       ],
     },

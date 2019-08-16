@@ -54,7 +54,7 @@
           <span>配置管理</span>
         </dt>
         <dd>
-          <router-link to="/dashboard/cookbook/cookCategory" tag="a">菜谱分类</router-link>
+          <router-link to="/dashboard/configManage/cookCategory" tag="a">菜谱分类</router-link>
         </dd>
         <dd>商品分类</dd>
         <dd>指令管理</dd>
