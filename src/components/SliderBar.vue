@@ -43,7 +43,7 @@
           <router-link to="/dashboard/operationManger/menuManage">菜谱管理</router-link>
         </dd>
         <dd>
-          <router-link to="">二维码管理</router-link>
+          <router-link to="/dashboard/operationManger/qrcodeManage">二维码管理</router-link>
         </dd>
       </dl>
     </div>
@@ -68,10 +68,21 @@
             <span>财务结算</span>
           </router-link>
         </dt>
-        <dd>中央厨房结算</dd>
-        <dd>提现管理</dd>
-        <dd>分销员管理</dd>
-        <dd>分销佣金设置</dd>
+        <dd>
+          <router-link to="/dashboard/financialSettlement/centralKitchenSettlement"
+                       tag="a">中央厨房结算</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/financialSettlement/cashOutManage" tag="a">提现管理</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/financialSettlement/distributorManage"
+                       tag="a">分销员管理</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/financialSettlement/distributionCommissionSetting"
+                       tag="a">分销佣金设置</router-link>
+        </dd>
       </dl>
     </div>
     <div class="menu_wrapper">
@@ -106,6 +117,7 @@ export default {
     flex: 2;
     margin-top: 20px;
     padding-left: 50px;
+    min-width: 230px;
   }
   .menu_wrapper{
     margin: 20px 0;
