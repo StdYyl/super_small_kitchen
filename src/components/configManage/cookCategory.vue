@@ -2,7 +2,7 @@
   <div id="app">
     <breadcrumb></breadcrumb>
     <div class="categoryTable" id="cookCategory">
-      <el-button @click="categoryAdd" style="float: right" type="primary">菜谱分类添加</el-button>
+      <el-button @click="categoryAdd(0)" style="float: right" type="primary">菜谱分类添加</el-button>
       <div style="clear: both;"></div>
       <el-table
         :header-cell-style="{background: '#f5f5f8'}"

@@ -94,7 +94,6 @@ export default new VueRouter({
         },
         {
           path: 'configManage/cookCategory',
-          name: 'cookCategoryIndex',
           meta: { title: '菜谱分类' },
           component: CookCategoryIndex,
           children:[
