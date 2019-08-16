@@ -10,7 +10,23 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      "/img": {
+        target: "https://image.chaoxiaochu.com", //设置调用的接口域名和端口
+        changeOrigin: true,
+        pathRewrite: {
+          '^/img': ''
+        }
+      },
+      '/api': {
+        target: 'https://cxc.umdemo.cn/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''     //路径重写，也可以写成 '^/api': 'http://f.apiplus.cn'
+        }
+      },
+
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -23,7 +39,7 @@ module.exports = {
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.
-    useEslint: true,
+    useEslint: false,
     // If true, eslint errors and warnings will also be shown in the error overlay
     // in the browser.
     showEslintErrorsInOverlay: false,
