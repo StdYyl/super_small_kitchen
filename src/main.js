@@ -1,11 +1,15 @@
 import Vue from 'vue';
+// ajax请求
 import Axios from 'axios';
+// 地图插件
 import AMap from 'vue-amap';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import App from './App';
 import router from './router';
+// svg组件
 import './icons/index';
+// 状态管理
 import store from './store/index';
 
 Vue.config.productionTip = false;

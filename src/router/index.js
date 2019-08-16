@@ -13,7 +13,7 @@ import StoreAdd from '../components/CooperationManager/AddStore';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
-import RegisterNav from '../view/register';
+import RegisterNav from '../pages/Register/register';
 import CookCategory from '../components/cookbook/cookCategory';
 import CentralKitchenSettlement from '../components/FinancialSettlement/CentralKitchenSettlement';
 import CashOutManage from '../components/FinancialSettlement/CashOutManage';
