@@ -1,0 +1,6 @@
+export const ADD = 'add'
+export const DELETE = 'delete'
+export const FIND = 'find'
+export const NEXT = 'next'
+export const PRIOR = 'prior'
+export const CHANGE_POS = 'chnage_pos'
