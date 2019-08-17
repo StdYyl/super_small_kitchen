@@ -1,4 +1,5 @@
 export default{
+  manager: null,
   DataList: [],
   addKitchenStepInfo: {
     first: {

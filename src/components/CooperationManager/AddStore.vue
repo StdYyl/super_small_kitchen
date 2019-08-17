@@ -57,14 +57,15 @@
             <el-form-item label="中央厨房名称" prop="name">
               <el-input v-model="ruleForm.name" placeholder="请填写中央厨房名称"></el-input>
             </el-form-item>
-            <el-form-item label="中央厨房logo" prop="imgLogo">
+            <el-form-item label="中央厨房logo" prop="imageLogoUrl" ref="uploadElement">
               <el-upload
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageLogoUrl" :src="imageLogoUrl" class="avatar">
+                :on-success="handleLogoAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                :on-change="clearValidate">
+                <img v-if="ruleForm.imageLogoUrl" :src="ruleForm.imageLogoUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -137,7 +138,7 @@
           </el-form>
         </div>
       </div>
-      <div class="step_first" v-if="step_num===2">
+      <div class="step_second" v-if="step_num===2">
         <div class="form">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
             <el-form-item label="负责人姓名" prop="chargeName">
@@ -146,17 +147,18 @@
             <el-form-item label="联系电话" prop="chargeTel">
               <el-input v-model="ruleForm.chargeTel" placeholder="请填写联系电话"></el-input>
             </el-form-item>
-            <el-form-item label="身份证号" prop="chargeCardNum">
-              <el-input v-model="ruleForm.chargeCardNum" placeholder="请填写身份证号"></el-input>
+            <el-form-item label="身份证号" prop="chargeId">
+              <el-input v-model="ruleForm.chargeId" placeholder="请填写身份证号"></el-input>
             </el-form-item>
             <el-form-item label="身份证正面照" prop="cardFront">
               <el-upload
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                :on-success="handleCardFrontAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="imageCardFrontUrl" :src="imageCardFrontUrl" class="avatar">
+                <img v-if="ruleForm.imageCardFrontUrl"
+                     :src="ruleForm.imageCardFrontUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -165,9 +167,9 @@
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                :on-success="handleCardEndAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="imageCardEndUrl" :src="imageCardEndUrl" class="avatar">
+                <img v-if="ruleForm.imageCardEndUrl" :src="ruleForm.imageCardEndUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -180,7 +182,7 @@
           </el-form>
         </div>
       </div>
-      <div class="step_first" v-if="step_num===3">
+      <div class="step_third" v-if="step_num===3">
         <div class="form">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
             <el-form-item label="营业执照号" prop="businessLicenseId">
@@ -191,9 +193,10 @@
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                :on-success="handleBusinessLicenseAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="businessLicenseImg" :src="businessLicenseImg" class="avatar">
+                <img v-if="ruleForm.businessLicenseImg"
+                     :src="ruleForm.businessLicenseImg" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -205,9 +208,10 @@
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
+                :on-success="handleHygieneLicenseAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="hygieneLicenseImg" :src="hygieneLicenseImg" class="avatar">
+                <img v-if="ruleForm.hygieneLicenseImg"
+                     :src="ruleForm.hygieneLicenseImg" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -235,6 +239,18 @@
           </el-form>
         </div>
       </div>
+      <div class="step_fourth" v-if="step_num===4">
+        <div class="success_container">
+          <div class="content">
+            <img src="../../../static/images/success.png" alt="">
+            <span class="success_title">添加成功</span>
+            <span class="success_note">恭喜您，已添加成为中央厨房</span>
+            <router-link to="">
+              <el-button type="primary" plain>返回</el-button>
+            </router-link>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -252,6 +268,7 @@ export default {
     return {
       ruleForm: {
         name: '',
+        imageLogoUrl: '',
         type: [],
         detail_address: '',
         simpleName: '',
@@ -259,9 +276,13 @@ export default {
         description: '',
         chargeName: '',
         chargeTel: '',
-        chargeCardNum: '',
+        chargeId: '',
+        imageCardFrontUrl: '',
+        imageCardEndUrl: '',
         businessLicenseId: '',
+        businessLicenseImg: '',
         hygieneLicenseId: '',
+        hygieneLicenseImg: '',
         alipayId: '',
         transferBank: '',
         bankId: '',
@@ -282,8 +303,8 @@ export default {
         description: [
           { required: true, message: '请输入中央厨房描述', trigger: 'blur' },
         ],
-        imgLogo: [
-          { required: true, message: '必须上传照片', trigger: 'blur' },
+        imageLogoUrl: [
+          { required: true, message: '必须上传照片', trigger: 'change' },
         ],
         chargeName: [
           { required: true, message: '请输入负责人名称', trigger: 'blur' },
@@ -293,28 +314,28 @@ export default {
           { required: true, message: '请输入联系电话', trigger: 'blur' },
           { min: 11, max: 11, message: '长度在必须为11位', trigger: 'blur' },
         ],
-        chargeCardNum: [
+        chargeId: [
           { required: true, message: '请输入身份证号', trigger: 'blur' },
           { min: 18, max: 18, message: '长度在必须为18位', trigger: 'blur' },
         ],
         cardFront: [
-          { required: true, message: '必须上传照片', trigger: 'blur' },
+          { required: true, message: '必须上传照片' },
         ],
         cardBack: [
-          { required: true, message: '必须上传照片', trigger: 'blur' },
+          { required: true, message: '必须上传照片' },
         ],
         businessLicenseId: [
           { required: true, message: '请输入营业执照号', trigger: 'blur' },
         ],
 
         businessLicenseImg: [
-          { required: true, message: '必须上传照片', trigger: 'blur' },
+          { required: true, message: '必须上传照片' },
         ],
         hygieneLicenseId: [
           { required: true, message: '请输入卫生许可证号', trigger: 'blur' },
         ],
         hygieneLicenseImg: [
-          { required: true, message: '必须上传照片', trigger: 'blur' },
+          { required: true, message: '必须上传照片' },
         ],
         alipayId: [
           { required: true, message: '请输入支付宝账号', trigger: 'blur' },
@@ -329,11 +350,6 @@ export default {
           { required: true, message: '请输入开户行', trigger: 'blur' },
         ],
       },
-      imageLogoUrl: '',
-      imageCardFrontUrl: '',
-      imageCardEndUrl: '',
-      businessLicenseImg: '',
-      hygieneLicenseImg: '',
       options: [{
         value: '选项1',
         label: '自营',
@@ -353,14 +369,7 @@ export default {
       loaded: false,
       center: [121.59996, 31.197646],
       events: {
-        init: (o) => {
-          // console.log(o.getCenter())
-          // console.log(this.$refs.map.$$getInstance())
-          // o.getCity((result) => {
-          //   // console.log(result);
-          //   self.location_content = result.province + result.district;
-          // });
-        },
+        init: (o) => {},
         'moveend': () => {
         },
         'zoomchange': () => {
@@ -429,6 +438,13 @@ export default {
   mounted() {
   },
   methods: {
+    clearValidate() {
+      if (this.imageLogoUrl !== '') {
+        this.rules.imageLogoUrl = [];
+        console.log(this.$refs);
+        // this.$refs.uploadElement.clearValidate();
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -439,20 +455,32 @@ export default {
         }
       });
     },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+    handleLogoAvatarSuccess(res, file) {
+      this.ruleForm.imageLogoUrl = URL.createObjectURL(file.raw);
+    },
+    handleCardFrontAvatarSuccess(res, file) {
+      this.ruleForm.imageCardFrontUrl = URL.createObjectURL(file.raw);
+    },
+    handleCardEndAvatarSuccess(res, file) {
+      this.ruleForm.imageCardEndUrl = URL.createObjectURL(file.raw);
+    },
+    handleBusinessLicenseAvatarSuccess(res, file) {
+      this.ruleForm.businessLicenseImg = URL.createObjectURL(file.raw);
+    },
+    handleHygieneLicenseAvatarSuccess(res, file) {
+      this.ruleForm.hygieneLicenseImg = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
+      const isValidate = file.type === 'image/jpeg' || 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+      if (!isValidate) {
+        this.$message.error('上传头像图片只能是 JPG或者PNG 格式!');
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return isJPG && isLt2M;
+      return isValidate && isLt2M;
     },
     changeLocation(value) {
       // this.$store.dispatch('change_pos', [value[0], value[1]]);
@@ -516,7 +544,7 @@ export default {
     font-size: 18px;
   }
   .main{
-    padding: 23px 30px;
+    padding: 23px 30px 300px;
     border: 1px solid #ddd;
     background-color: #fff;
     margin-bottom: 20px;
@@ -565,6 +593,29 @@ export default {
   }
   .form{
     padding: 0 80px;
+  }
+  .success_container{
+    padding: 0 100px;
+  }
+  .content{
+    margin-top: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    img{
+      width: 100px;
+      height: 100px;
+    }
+    .success_title{
+      font: normal 700 24px/30px '微软雅黑';
+      margin: 20px 0;
+    }
+    .success_note{
+      font: normal 400 16px/18px '微软雅黑';
+      margin: 0 0 20px;
+      color: #999;
+    }
   }
   /*上传图片模块*/
   .avatar-uploader i{

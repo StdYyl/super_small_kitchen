@@ -1,9 +1,13 @@
 import {
-  ADD, CHANGE_POS,
+  ADD,
+  CHANGE_POS,
   DELETE,
   FIND,
   NEXT,
   PRIOR,
+  KEY,
+  SET_STORAGE,
+  REMOVE_STORAGE
 } from './mutation-types';
 
 export default {
@@ -33,7 +37,16 @@ export default {
     }
   },
   [CHANGE_POS](state, { item }) {
-    console.log('change_pos');
     state.city = [item[0], item[1], item[2]];
+  },
+  [SET_STORAGE](state, { item }) {
+    console.log('SET_STORAGE');
+    state.manager = item;
+    localStorage.setItem(KEY, JSON.stringify(item));
+  },
+  [REMOVE_STORAGE](state) {
+    console.log('REMOVE_STORAGE');
+    state.manager = null;
+    localStorage.removeItem(KEY);
   },
 };

@@ -16,7 +16,7 @@
                 <router-link to="/dashboard/main_page" tag="span">首页</router-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <router-link to="/login" tag="span">退出登录</router-link>
+                <span @click="loginOut">退出登录</span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -29,6 +29,17 @@
 <script>
 export default {
   name: 'NavBar',
+  methods: {
+    loginOut() {
+      this.$store.dispatch('removeStorage');
+      this.axios.post('api/cgi/manager/logout', {}).then((res) => {
+        console.log(res);
+        if (res.data.code === 200) {
+          this.$router.push('/login');
+        }
+      });
+    },
+  },
 };
 </script>
 

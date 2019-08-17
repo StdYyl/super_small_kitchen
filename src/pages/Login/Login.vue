@@ -10,8 +10,8 @@
             <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="70px"
                      class="demo-dynamic" :rules="rules" :label-position="'left'">
               <div class="form_item">
-                <el-form-item prop="name" label="手机号*">
-                  <el-input v-model="dynamicValidateForm.name" placeholder="phone"></el-input>
+                <el-form-item prop="phone" label="手机号*">
+                  <el-input v-model="dynamicValidateForm.phone" placeholder="phone"></el-input>
                 </el-form-item>
               </div>
               <div class="form_item">
@@ -30,10 +30,8 @@
               </div>
             </el-form>
             <div class="btn_container">
-              <router-link to="/dashboard/main_page" tag="a">
-                <el-button type="primary" @click="submitForm('dynamicValidateForm')">
-                  登录</el-button>
-              </router-link>
+              <el-button type="primary" @click="submitForm('dynamicValidateForm')">
+                登录</el-button>
             </div>
             <div class="agree">
               <p>登录即同意并遵守《超小厨平台服务协议》</p>
@@ -64,12 +62,12 @@ export default {
     };
     return {
       dynamicValidateForm: {
-        name: '',
-        pass: '',
+        phone: '15010001001',
+        pass: '123456',
       },
       isShowPwd: false,
       rules: {
-        name: [
+        phone: [
           { validator: validateName, trigger: 'blur' },
         ],
         pass: [
@@ -81,7 +79,15 @@ export default {
   rules: {},
   methods: {
     submitForm() {
-      console.log(this.dynamicValidateForm);
+      this.axios.post('api/cgi/manager/login', {
+        "mobile": this.dynamicValidateForm.phone,
+        "password": this.dynamicValidateForm.pass,
+      }).then((res) => {
+        if (res.data.code === 200) {
+          this.$store.dispatch('setStorage', res.data.body.manager);
+          this.$router.push('/dashboard/main_page');
+        }
+      });
     },
     showPwd() {
       if (this.dynamicValidateForm.pass === '') {
@@ -93,6 +99,11 @@ export default {
   },
   components: {
     LoginHeader,
+  },
+  mounted() {
+    if (this.$store.getters.getStorage) {
+      this.$router.push('/dashboard/main_page');
+    }
   },
 };
 </script>

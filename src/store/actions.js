@@ -5,6 +5,8 @@ import {
   NEXT,
   PRIOR,
   CHANGE_POS,
+  SET_STORAGE,
+  REMOVE_STORAGE,
 } from './mutation-types';
 
 export default {
@@ -19,5 +21,11 @@ export default {
   },
   change_pos({ commit }, item) {
     commit(CHANGE_POS, { item });
+  },
+  setStorage({ commit }, item) {
+    commit(SET_STORAGE, { item });
+  },
+  removeStorage({ commit }) {
+    commit(REMOVE_STORAGE);
   },
 };
