@@ -88,13 +88,15 @@
     <div class="menu_wrapper">
       <dl>
         <dt>
-          <router-link to="" tag="a">
             <svg-icon icon-class="tree"></svg-icon>
             <span>系统管理</span>
-          </router-link>
         </dt>
-        <dd>岗位管理</dd>
-        <dd>管理员管理</dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/postManagement">岗位管理</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/adminManagement">管理员管理</router-link>
+        </dd>
         <dd>推荐位管理</dd>
         <dd>通知管理</dd>
         <dd>指令集管理</dd>

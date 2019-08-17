@@ -91,12 +91,15 @@
                 message: '注册成功！',
                 type: 'success',
               });
+              this.$store.dispatch('clear_from')
+              this.$router.push('login');
               return;
             }
             this.indexed.push(1);
+
             this.which = this.componentsName[this.indexed.length - 1];
           }
-        });
+        })
       }
       ,
       previous() {
