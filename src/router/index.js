@@ -12,9 +12,12 @@ import MenuManage from '../components/OperationManager/MenuManage';
 import StoreAdd from '../components/CooperationManager/AddStore';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
+import postManagement from '../components/systemManager/postManagement';
+import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
 import RegisterNav from '../pages/Register/register';
 //配置管理
+import Register from '../pages/Register/register';
 import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
 import CookCategory from '../components/configManage/cookCategory';
 import CookCategoryAdd from '../components/configManage/cookCategoryAdd';
@@ -31,7 +34,6 @@ import CentralKitchenSettlement from '../components/FinancialSettlement/CentralK
 import CashOutManage from '../components/FinancialSettlement/CashOutManage';
 import DistributorManage from '../components/FinancialSettlement/DistributorManage';
 import DistributionCommissionSetting from '../components/FinancialSettlement/DistributionCommissionSetting';
-import BasicInformation from '../components/register/infoRegistration';
 
 Vue.use(VueRouter);
 
@@ -47,7 +49,7 @@ export default new VueRouter({
     },
     {
       path: '/register',
-      component: RegisterNav,
+      component: Register,
     },
     {
       path: '/dashboard',
@@ -195,6 +197,24 @@ export default new VueRouter({
           meta: { title: '分销员管理' },
           component: DistributionCommissionSetting,
         },
+        {
+          path:'systemManager/postManagement',
+          component: postManagement
+        },
+        {
+          path:'systemManager/adminManagement',
+          component: adminManagement,
+          children:[
+            {
+              path:'add',
+              redirect:false,
+            },
+            {
+              path:'editor/:a',
+              redirect:false,
+            },
+          ]
+        }
       ],
     },
   ],

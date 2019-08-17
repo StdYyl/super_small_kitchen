@@ -4,6 +4,8 @@ export const FIND = 'find'
 export const NEXT = 'next'
 export const PRIOR = 'prior'
 export const CHANGE_POS = 'chnage_pos'
+export const CLEAR_FROM = 'clear_from'
+
 export const KEY = 'manager'
 export const SET_STORAGE = 'setStorage'
 export const REMOVE_STORAGE = 'removeStorage'

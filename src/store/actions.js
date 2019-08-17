@@ -5,6 +5,7 @@ import {
   NEXT,
   PRIOR,
   CHANGE_POS,
+  CLEAR_FROM,
   SET_STORAGE,
   REMOVE_STORAGE,
 } from './mutation-types';
@@ -27,5 +28,8 @@ export default {
   },
   removeStorage({ commit }) {
     commit(REMOVE_STORAGE);
+  },
+  clear_from({ commit }) {
+    commit(CLEAR_FROM);
   },
 };
