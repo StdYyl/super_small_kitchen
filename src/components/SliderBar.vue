@@ -56,8 +56,8 @@
         <dd>
           <router-link to="/dashboard/configManage/cookCategory" tag="a">菜谱分类</router-link>
         </dd>
-        <dd>商品分类</dd>
-        <dd>指令管理</dd>
+        <dd><router-link to="/dashboard/configManage/goodsCategory" tag="a">商品分类</router-link></dd>
+        <dd><router-link to="/dashboard/configManage/directive" tag="a">指令管理</router-link></dd>
       </dl>
     </div>
     <div class="menu_wrapper">
