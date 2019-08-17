@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <breadcrumb></breadcrumb>
-    <div class="categoryTable">
-      <el-button style="float: right" type="primary">菜谱分类添加</el-button>
+    <div class="categoryTable" id="cookCategory">
+      <el-button @click="categoryAdd(0)" style="float: right" type="primary">菜谱分类添加</el-button>
       <div style="clear: both;"></div>
       <el-table
         :header-cell-style="{background: '#f5f5f8'}"
@@ -64,9 +64,9 @@
               @click="scope.row.inputStatus = scope.row.inputStatus !== true"
               :style="scope.row.inputStatus === true?'color:#35c1c2':'color:#409eff'">
               {{scope.row.inputStatus ? '确定':'修改'}}</span>
-            <span @click="">子分类</span>
-            <span @click="">编辑</span>
-            <span @click="" style="color: #fe6a58">删除</span>
+            <span @click="categoryChild(scope.row.cookCategoryId)">子分类</span>
+            <span @click="categoryEdit(scope.row.cookCategoryId)">编辑</span>
+            <span @click="categoryDel(scope.row.cookCategoryId)" style="color: #fe6a58">删除</span>
           </span>
           </template>
         </el-table-column>
@@ -87,7 +87,24 @@
       }
     },
     methods: {
-
+      categoryChild:function (id) {
+        this.$router.push({
+          path : 'cookCategory/child/' + id
+        });
+      },
+      categoryEdit:function (id) {
+        this.$router.push({
+          path : 'cookCategory/edit/' + id
+        });
+      },
+      categoryDel:function (id) {
+        ;
+      },
+      categoryAdd:function (id) {
+        this.$router.push({
+          path : 'cookCategory/add/' + id
+        });;
+      }
     },
     mounted() {
       getCookBookList().then(val => {
@@ -100,35 +117,14 @@
   }
 </script>
 <style>
-  .el-table th, .el-table tr{
-    background: none;
-  }
-  .templateSpan span{
-    cursor:pointer;
-  }
-  .templateSpan span:after{
-    content: " | ";
-    color: #999999;
-  }
-  .templateSpan span:last-child:after{
-    content: "";
-  }
-  .el-table__row:nth-of-type(1) .cell{
+  /*以下样式不会影响全局*/
+  #cookCategory .el-table__row:nth-of-type(1) .cell{
     height: 32px;
     line-height: 32px;
   }
-  .el-input__inner{
+  #cookCategory .el-input__inner{
     height: 32px;
   }
-  .cover{
-    width: 32px;
-    height: 32px;
-    margin: 0 auto;
-  }
-  .categoryTable{
-    padding: 23px 30px;
-    margin-top: 30px;
-    min-height: 800px;
-    border: 1px solid #ddd;
-  }
+
 </style>
+
