@@ -1,12 +1,15 @@
 <template>
-  <div id="categoryAdd">
+  <div id="categoryEdit">
     <breadcrumb></breadcrumb>
     <div class="categoryTable">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="上级分类">
-          <el-select v-model="ruleForm.region" placeholder="请选择上级分类" value="ruleForm.region">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select :disabled="ruleForm.parentId===''" v-model="ruleForm.region" placeholder="请选择上级分类" value="ruleForm.region">
+            <el-option
+              v-for="goodsCategoryItem in goodsCategoryList"
+              :key="goodsCategoryItem.categoryId"
+              :label="goodsCategoryItem.name"
+              :value="goodsCategoryItem.categoryId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="分类名称" prop="name">
@@ -29,6 +32,7 @@
               accept="image/png,image/gif,image/jpg,image/jpeg"
               :before-upload="beforeUpLoad">
               <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+              <img v-else-if="ruleForm.cover" :src="/img/ + ruleForm.cover + '/360'" class="avatar" alt="">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
             <!--            <img :src="/img/ + ruleForm.cover + '/360'" alt="">-->
@@ -38,13 +42,6 @@
 
 
 
-
-        <el-form-item label="是否热门">
-          <el-switch v-model="ruleForm.tags.hot"></el-switch>
-        </el-form-item>
-        <el-form-item label="是否推荐搜索">
-          <el-switch v-model="ruleForm.tags.search"></el-switch>
-        </el-form-item>
         <el-form-item label="分类描述">
           <el-input type="textarea" v-model="ruleForm.description"></el-input>
         </el-form-item>
@@ -58,16 +55,17 @@
 </template>
 
 <script>
-  import {getCookBookCategory,editCookBookCategory} from '@/api/cookBook';
+  import {getGoodsCategory,getGoodsCategoryList,editGoodsCategory} from '@/api/goodsCategory';
   import breadcrumb from '@/components/currency/breadcrumb';
   export default {
-    name: 'categoryAdd',
+    name: 'goodsCategoryEdit',
     components:{breadcrumb},
     data() {
       return {
+        goodsCategoryList:[],
         imageUrl:'',
         ruleForm: {
-          cookCategoryId:'',
+          categoryId:'',
           parentId:'',
           region:'',
           name:'',
@@ -117,8 +115,23 @@
                 tag.push(item);
             this.ruleForm.tags = tag;*/
             //over
+            editGoodsCategory(this.ruleForm).then(value => {
+              if (value.code === 200) {
+                this.$router.back(-1);
+                this.$message({
+                  type: 'success',
+                  message: '更新成功'
+                });
+                this.init();
+              }else {
+                this.$message({
+                  type: 'error',
+                  message: value.desc
+                });
+              }
+            });
             console.log(this.ruleForm);
-            //console.log(editCookBookCategory(this.ruleForm));
+            //console.log(editGoodsCategory(this.ruleForm));
           } else {
             console.log('error submit!!');
             return false;
@@ -131,11 +144,16 @@
     },
     mounted() {
 
-      getCookBookCategory(this.$route.params.id).then(val => {
-        //登录实现后，将该语句改为 this.ruleForm = val;
-        //this.ruleForm = {"code":200,"body":{"cookCategoryId":"RQP8HV8GDLL5Z96","parentId":"","name":"营养早餐","cover":"d0/cookCategory/190219/y630codxqplokk61.jpg","description":"营养早餐，真的棒666","tags":{"hot":true,"search":false},"sort":1,"status":1},"time":1565943605947}.body;
+      getGoodsCategory(this.$route.params.id).then(val => {
+        //登录实现后，将该语句改为
+        this.ruleForm = val;
+        this.ruleForm.region = val.parentId;
+        //this.ruleForm = {"code":200,"body":{"categoryId":"RQP8HV8GDLL5Z96","parentId":"","name":"营养早餐","cover":"d0/goodsCategory/190219/y630codxqplokk61.jpg","description":"营养早餐，真的棒666","tags":{"hot":true,"search":false},"sort":1,"status":1},"time":1565943605947}.body;
       });
       this.imageUrl = this.ruleForm.cover;
+      getGoodsCategoryList().then(val => {
+        this.goodsCategoryList = val;
+      });
     }
   };
 </script>
@@ -169,10 +187,10 @@
     height: 100px;
     display: block;
   }
-  #categoryAdd .el-input__inner{
+  #categoryEdit .el-input__inner{
     width: 300px;
   }
-  #categoryAdd .el-textarea__inner{
+  #categoryEdit .el-textarea__inner{
     width: 400px;
   }
   .categoryImgLine {
@@ -182,10 +200,10 @@
     border-radius: 6px;
     cursor: pointer;
 
-  img {
-    height: 100px;
-    width: 100px;
-  }
+    img {
+      height: 100px;
+      width: 100px;
+    }
 
   }
 </style>
