@@ -97,7 +97,9 @@
         <dd>
           <router-link to="/dashboard/systemManager/adminManagement">管理员管理</router-link>
         </dd>
-        <dd>推荐位管理</dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/recommendManagement">推荐位管理</router-link>
+        </dd>
         <dd>通知管理</dd>
         <dd>指令集管理</dd>
       </dl>

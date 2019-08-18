@@ -34,6 +34,7 @@ import CentralKitchenSettlement from '../components/FinancialSettlement/CentralK
 import CashOutManage from '../components/FinancialSettlement/CashOutManage';
 import DistributorManage from '../components/FinancialSettlement/DistributorManage';
 import DistributionCommissionSetting from '../components/FinancialSettlement/DistributionCommissionSetting';
+import recommendManagement from '../components/systemManager/recommendManagement';
 
 Vue.use(VueRouter);
 
@@ -214,6 +215,10 @@ export default new VueRouter({
               redirect:false,
             },
           ]
+        },
+        {
+          path:'systemManager/recommendManagement',
+          component:recommendManagement
         }
       ],
     },
