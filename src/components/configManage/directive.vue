@@ -97,7 +97,7 @@
 </template>
 
 <script>
-  import {getDirectiveList,getDirective,editDirective,delDirective,addDirective} from '@/api/directive';
+  import {getDirectiveList,editDirective,delDirective,addDirective} from '@/api/directive';
   import breadcrumb from '@/components/currency/breadcrumb';
   export default {
     name:"directive",
@@ -248,6 +248,7 @@
     background: white;
   }
   }
+  /*加沙我达瓦大大娃娃等等*/
 
 </style>
 
