@@ -1,5 +1,5 @@
 import { requested } from './axiosed'
 
-export function getAdminList() {
-  return requested('api/cgi/m0/manager/select');
+export function getAdminList(last=0) {
+  return requested(`api/cgi/m0/manager/select?last=${last}`);
 }

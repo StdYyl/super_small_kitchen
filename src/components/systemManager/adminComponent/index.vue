@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column
         prop="position"
-        label="管理员岗位" >
+        label="管理员岗位">
       </el-table-column>
       <el-table-column
         prop="managerId"
@@ -35,6 +35,10 @@
         </template>
       </el-table-column>
     </el-table>
+    <div  style="text-align: center">
+      <el-button :style="isMore?'color: grey':''" type="text" @click="loadingMore">{{isMore?"加载更多":"已加载全部"}}</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -46,31 +50,39 @@
     name: 'index',
     data() {
       return {
-        adminList: [
-          { managerId:'M63POCO13KJM15KW', name: '1', mobile: '15733333331', role: 'seller', position: 'master', vendorId: '', sellerId: '' }
-        ]
+        adminList: [],
+        lastId: 0,
+        isMore: false
       };
     },
-    methods:{
-      addAdmin(){
-        this.$emit('fun','adminAdd')
-        this.$router.push('adminManagement/add')
+    methods: {
+      addAdmin() {
+        this.$emit('fun', 'adminAdd');
+        this.$router.push('adminManagement/add');
       },
-      handleClick(id){
-        this.$emit('fun','editor')
-        this.$router.push('adminManagement/editor/'+id)
+      handleClick(id) {
+        this.$emit('fun', 'editor');
+        this.$router.push('adminManagement/editor/' + id);
+      },
+      async loadingAdminList(){
+        let rs = await getAdminList(this.lastId);
+        this.adminList.push(...rs.data.body.list);
+        this.lastId = rs.data.body.page.last;
+        this.isMore = rs.data.body.page.more;
+      },
+      loadingMore(){
+        if(this.isMore) this.loadingAdminList()
       }
     },
     async mounted() {
-      // let rs = await getAdminList();
-      // console.log(rs)
+      this.loadingAdminList()
     }
   };
 </script>
 
 <style scoped>
 
-  .el-table>th {
+  .el-table > th {
     background-color: #f5f5f8
   }
 </style>
