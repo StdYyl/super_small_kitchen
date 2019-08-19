@@ -28,17 +28,12 @@ export default {
 
 <style scoped>
   .app_wrapper{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
   }
   .main_container{
     width: 100%;
     display: flex;
     background-color: #f8f9fb;
-    position: relative;
-    min-width: 1400px;
+    min-width: 1200px;
   }
   .app_main{
     flex: 9;

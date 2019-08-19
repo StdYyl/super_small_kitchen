@@ -11,50 +11,9 @@
       <p class="title">中央厨房添加</p>
     </div>
     <div class="main">
-      <div class="steps">
-        <div class="step_item doing">
-          <span>1.中央厨房信息</span>
-          <div class="arrow">
-            <div class="arrow_pre arrow_pre_doing">
-            </div>
-            <div :class="$store.state.addKitchenStepInfo.second.flag ?
-            'arrow_next arrow_next_doing' : 'arrow_next'"></div>
-          </div>
-        </div>
-        <div :class="$store.state.addKitchenStepInfo.second.flag ?
-            'step_item doing' : 'step_item'">
-          <span>2.负责人信息</span>
-          <div class="arrow">
-            <div :class="$store.state.addKitchenStepInfo.second.flag ?
-            'arrow_pre arrow_pre_doing' : 'arrow_pre'">
-            </div>
-            <div :class="$store.state.addKitchenStepInfo.third.flag ?
-            'arrow_next arrow_next_doing' : 'arrow_next'"></div>
-          </div>
-        </div>
-        <div :class="$store.state.addKitchenStepInfo.third.flag ?
-            'step_item doing' : 'step_item'">
-          <span>3.账户信息</span>
-          <div class="arrow">
-            <div :class="$store.state.addKitchenStepInfo.third.flag ?
-            'arrow_pre arrow_pre_doing' : 'arrow_pre'"></div>
-            <div :class="$store.state.addKitchenStepInfo.fourth.flag ?
-            'arrow_next arrow_next_doing' : 'arrow_next'"></div>
-          </div>
-        </div>
-        <div :class="$store.state.addKitchenStepInfo.fourth.flag ?
-            'step_item doing' : 'step_item'">
-          <span>4.添加成功</span>
-          <div class="arrow">
-            <div :class="$store.state.addKitchenStepInfo.fourth.flag ?
-            'arrow_pre arrow_pre_doing' : 'arrow_pre'"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-          <div class="step_first" v-show="step_num===1">
+      <div class="step_first">
+        <div class="form">
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
             <el-form-item label="中央厨房名称" prop="name">
               <el-input v-model="ruleForm.name" placeholder="请填写中央厨房名称"></el-input>
             </el-form-item>
@@ -65,7 +24,7 @@
                 :show-file-list="false"
                 :on-success="handleLogoAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageLogoUrl" :src="ruleForm.imageLogoUrl" class="avatar">
+                <div v-if="ruleForm.imageLogoUrl" :style="'background:url('+/img/+ruleForm.imageLogoUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -127,16 +86,6 @@
                 </div>
               </div>
             </el-form-item>
-            <el-form-item>
-              <div style="display: flex;justify-content: center;align-items: center">
-                <el-button type="primary" @click="nextStep(2)">下一步</el-button>
-                <router-link to="/dashboard/cooperationManger/centralKitchenManage">
-                  <el-button>返回</el-button>
-                </router-link>
-              </div>
-            </el-form-item>
-          </div>
-          <div class="step_second" v-show="step_num===2">
             <el-form-item label="负责人姓名" prop="chargeName">
               <el-input v-model="ruleForm.chargeName" placeholder="请填写负责人姓名"></el-input>
             </el-form-item>
@@ -153,8 +102,9 @@
                 :show-file-list="false"
                 :on-success="handleCardFrontAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageCardFrontUrl"
-                     :src="ruleForm.imageCardFrontUrl" class="avatar">
+                <div v-if="ruleForm.imageCardFrontUrl" :style="'background:url('+/img/+ruleForm.imageCardFrontUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
+<!--                <img v-if="ruleForm.imageCardFrontUrl"-->
+<!--                     :src="ruleForm.imageCardFrontUrl" class="avatar">-->
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -165,18 +115,11 @@
                 :show-file-list="false"
                 :on-success="handleCardEndAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageCardEndUrl" :src="ruleForm.imageCardEndUrl" class="avatar">
+                <div v-if="ruleForm.imageCardEndUrl" :style="'background:url('+/img/+ruleForm.imageCardEndUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
+<!--                <img v-if="ruleForm.imageCardEndUrl" :src="ruleForm.imageCardEndUrl" class="avatar">-->
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
-            <el-form-item>
-              <div style="display: flex;justify-content: center;align-items: center">
-                <el-button type="primary" @click="nextStep(3)">下一步</el-button>
-                <el-button @click="priorStep(1)">返回</el-button>
-              </div>
-            </el-form-item>
-          </div>
-          <div class="step_third" v-show="step_num===3">
             <el-form-item label="营业执照号" prop="businessLicenseId">
               <el-input v-model="ruleForm.businessLicenseId" placeholder="请填写营业执照号"></el-input>
             </el-form-item>
@@ -187,8 +130,9 @@
                 :show-file-list="false"
                 :on-success="handleBusinessLicenseAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.businessLicenseImg"
-                     :src="ruleForm.businessLicenseImg" class="avatar">
+                <div v-if="ruleForm.businessLicenseImg" :style="'background:url('+/img/+ruleForm.businessLicenseImg+'/360) center center / cover no-repeat;'" class="avatar"></div>
+<!--                <img v-if="ruleForm.businessLicenseImg"-->
+<!--                     :src="ruleForm.businessLicenseImg" class="avatar">-->
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -202,8 +146,9 @@
                 :show-file-list="false"
                 :on-success="handleHygieneLicenseAvatarSuccess"
                 :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.hygieneLicenseImg"
-                     :src="ruleForm.hygieneLicenseImg" class="avatar">
+                <div v-if="ruleForm.hygieneLicenseImg" :style="'background:url('+/img/+ruleForm.hygieneLicenseImg+'/360) center center / cover no-repeat;'" class="avatar"></div>
+<!--                <img v-if="ruleForm.hygieneLicenseImg"-->
+<!--                     :src="ruleForm.hygieneLicenseImg" class="avatar">-->
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -219,28 +164,18 @@
             <el-form-item label="开户行" prop="openingBank">
               <el-input v-model="ruleForm.openingBank" placeholder="请填写开户行"></el-input>
             </el-form-item>
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="note">
               <el-input v-model="ruleForm.note" placeholder="请填写备注"></el-input>
             </el-form-item>
             <el-form-item>
               <div style="display: flex;justify-content: center;align-items: center">
-                <el-button type="primary" @click="submitForm('ruleForm')">下一步</el-button>
-                <el-button @click="priorStep(2)">返回</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">立即更新</el-button>
+                <router-link to="/dashboard/cooperationManger/centralKitchenManage">
+                  <el-button>返回</el-button>
+                </router-link>
               </div>
             </el-form-item>
-          </div>
-        </el-form>
-      </div>
-      <div class="step_fourth" v-if="step_num===4">
-        <div class="success_container">
-          <div class="content">
-            <img src="../../../static/images/success.png" alt="">
-            <span class="success_title">添加成功</span>
-            <span class="success_note">恭喜您，已添加成为中央厨房</span>
-            <router-link to="/dashboard/cooperationManger/centralKitchenManage">
-              <el-button type="primary" plain>返回</el-button>
-            </router-link>
-          </div>
+          </el-form>
         </div>
       </div>
     </div>
@@ -254,14 +189,14 @@ import AMap from 'vue-amap';
 Vue.use(AMap);
 const amapManager = new AMap.AMapManager();
 export default {
-  name: 'AddStore',
+  name: "EditStore",
   data() {
     const self = this;
     return {
+      vendor: null,
       ruleForm: {
         name: '',
         imageLogoUrl: '',
-        imageLogoUrl_plus: '.jpg',
         type: '',
         detail_address: '',
         simpleName: '',
@@ -271,20 +206,15 @@ export default {
         chargeTel: '',
         chargeId: '',
         imageCardFrontUrl: '',
-        imageCardFrontUrl_plus: '.jpg',
         imageCardEndUrl: '',
-        imageCardEndUrl_plus: '.jpg',
         businessLicenseId: '',
         businessLicenseImg: '',
-        businessLicenseImg_plus: '.jpg',
         hygieneLicenseId: '',
         hygieneLicenseImg: '',
-        hygieneLicenseImg_plus: '.jpg',
         alipayId: '',
         transferBank: '',
         bankId: '',
         openingBank: '',
-        note: '',
       },
       rules: {
         name: [
@@ -292,7 +222,7 @@ export default {
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
         type: [
-          { required: true, message: '必须选择类型', trigger: 'change' },
+          { required: true, message: '必须选择类型', trigger: 'blur' },
         ],
         simpleName: [
           { required: true, message: '请输入中央厨房简称', trigger: 'blur' },
@@ -389,44 +319,43 @@ export default {
         events: {
           init(o) {
             o.getCurrentPosition((status, result) => {
-              if (result && result.position) {
-                self.lng = result.position.lng;
-                self.lat = result.position.lat;
-                self.center = [self.lng, self.lat];
-                self.loaded = true;
-                self.location_content = result.formattedAddress;
-                self.$nextTick();
-                var province = '', city = '', district = '', street_number = '';
-                self.axios.get('api/cgi/map/locationToAddress?latitude=' + self.lat + '&longitude=' + self.lng).then((res) => {
-                  console.log(res.data);
-                  province = res.data.body.address_component.province;
-                  city = res.data.body.address_component.city;
-                  district = res.data.body.address_component.district;
-                  street_number = res.data.body.address_component.street_number;
-
-                  self.CityInfo.forEach((item1) => {
-                    if (item1.label === province && item1.children) {
-                      item1.children.forEach((item2) => {
-                        if (item2.label === city) {
-                          if (item2.children) {
-                            item2.children.forEach((item3) => {
-                              if (item3.label === district) {
-                                self.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
-                                self.detail_address = street_number;
-                              }
-                            });
-                          }
-                        }
-                      });
-                    }
-                  });
-                });
-              }
+              // if (result && result.position) {
+              //   self.lng = result.position.lng;
+              //   self.lat = result.position.lat;
+              //   self.center = [self.lng, self.lat];
+              //   self.loaded = true;
+              //   self.location_content = result.formattedAddress;
+              //   self.$nextTick();
+              //   var province = '', city = '', district = '', street_number = '';
+              //   self.axios.get('api/cgi/map/locationToAddress?latitude=' + self.lat + '&longitude=' + self.lng).then((res) => {
+              //     console.log(res.data);
+              //     province = res.data.body.address_component.province;
+              //     city = res.data.body.address_component.city;
+              //     district = res.data.body.address_component.district;
+              //     street_number = res.data.body.address_component.street_number;
+              //
+              //     self.CityInfo.forEach((item1) => {
+              //       if (item1.label === province && item1.children) {
+              //         item1.children.forEach((item2) => {
+              //           if (item2.label === city) {
+              //             if (item2.children) {
+              //               item2.children.forEach((item3) => {
+              //                 if (item3.label === district) {
+              //                   self.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
+              //                   self.detail_address = street_number;
+              //                 }
+              //               });
+              //             }
+              //           }
+              //         });
+              //       }
+              //     });
+              //   });
+              // }
             });
           },
         },
       }],
-      step_num: 1,
     };
   },
   created() {
@@ -439,61 +368,77 @@ export default {
     });
   },
   mounted() {
+    let vendorId = this.$route.params.vendorId;
+    this.axios.get('api/cgi/m0/vendor/detail?vendorId='+vendorId).then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          this.vendor = res.data.body;
+          console.log(this.vendor);
+          this.location = this.vendor.address;
+          this.ruleForm.name = this.vendor.name;
+          this.ruleForm.imageLogoUrl = this.vendor.cover;
+          console.log(this.ruleForm.imageLogoUrl);
+          if(this.vendor.type === "partner"){
+            this.ruleForm.type = '非自营';
+          }else if(this.vendor.type === "self"){
+            this.ruleForm.type = '自营';
+          }else if(this.vendor.type === "chain"){
+            this.ruleForm.type = '连锁';
+          }
+          this.ruleForm.simpleName = this.vendor.shortName;
+          this.ruleForm.introduction = this.vendor.introduction;
+          this.ruleForm.description = this.vendor.description;
+          this.ruleForm.chargeName = this.vendor.ownerName;
+          this.ruleForm.chargeTel = this.vendor.ownerMobile;
+          this.ruleForm.chargeId = this.vendor.ownerCardNo;
+          this.ruleForm.imageCardFrontUrl = this.vendor.ownerCardCopyA;
+          this.ruleForm.imageCardEndUrl = this.vendor.ownerCardCopyB;
+          this.ruleForm.businessLicenseId = this.vendor.licenseNo;
+          this.ruleForm.businessLicenseImg = this.vendor.licenseCopy;
+          this.ruleForm.hygieneLicenseId = this.vendor.hygieneLicenseNo;
+          this.ruleForm.hygieneLicenseImg = this.vendor.hygieneLicenseCopy;
+          this.ruleForm.alipayId = this.vendor.alipayNo;
+          this.ruleForm.transferBank = this.vendor.bankCardName;
+          this.ruleForm.bankId = this.vendor.bankCardNo;
+          this.ruleForm.openingBank = this.vendor.bankOfDeposit;
+          this.axios.get('https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8')
+            .then((res) => {
+              this.lng = res.data.geocodes[0].location.split(',')[0];
+              this.lat = res.data.geocodes[0].location.split(',')[1];
+              this.center = [this.lng, this.lat];
+
+              var province = '', city = '', district = '', street_number = '';
+              province = res.data.geocodes[0].province;
+              city = res.data.geocodes[0].city;
+              district = res.data.geocodes[0].district;
+              street_number = res.data.geocodes[0].street + res.data.geocodes[0].number;
+                this.CityInfo.forEach((item1) => {
+                  if (item1.label === province && item1.children) {
+                    item1.children.forEach((item2) => {
+                      if (item2.label === city) {
+                        if (item2.children) {
+                          item2.children.forEach((item3) => {
+                            if (item3.label === district) {
+                              this.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
+                              this.detail_address = street_number;
+                            }
+                          });
+                        }
+                      }
+                    });
+                  }
+                });
+              });
+        }
+      }
+    });
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.step_num = 4;
-          this.$store.dispatch('next', 4);
-          var type = '';
-          if(this.ruleForm.type === '非自营'){
-            type = 'partner';
-          }else if(this.ruleForm.type === '自营'){
-            type = 'self';
-          }else if(this.ruleForm.type === '连锁'){
-            type = 'chain';
-          }
-          console.log(type);
-          let vendor = {
-            "mobile": this.$store.state.manager.mobile,
-            "password": this.$store.state.manager.pass,
-            "password2": this.$store.state.manager.pass,
-            "name": this.ruleForm.name,
-            "shortName": this.ruleForm.simpleName,
-            "cover": this.ruleForm.imageLogoUrl,
-            "type": type,
-            "images": [],
-            "description": this.ruleForm.description,
-            "introduction": this.ruleForm.introduction,
-            "longitude": this.lng,
-            "latitude": this.lat,
-            "ownerName": this.ruleForm.chargeName,
-            "ownerCardNo": this.ruleForm.chargeId,
-            "ownerCardCopyA": this.ruleForm.imageCardFrontUrl,
-            "ownerCardCopyB": this.ruleForm.imageCardEndUrl,
-            "ownerMobile": this.ruleForm.chargeTel,
-            "licenseNo": this.ruleForm.businessLicenseId,
-            "licenseCopy": this.ruleForm.businessLicenseImg,
-            "hygieneLicenseNo": this.ruleForm.hygieneLicenseId,
-            "hygieneLicenseCopy": this.ruleForm.hygieneLicenseImg,
-            "alipayNo": this.ruleForm.alipayId,
-            "bankCardName": this.ruleForm.transferBank,
-            "bankCardNo": this.ruleForm.bankId,
-            "bankOfDeposit": this.ruleForm.openingBank,
-            "remark": this.ruleForm.note,
-            "status": 1
-          };
-          console.log(this.ruleForm.imageLogoUrl.replace('blob:http://localhost:8080/','t2/vendor/190816/').concat(this.ruleForm.businessLicenseImg_plus));
-          this.axios.post('api/cgi/m0/vendor/create', vendor).then((res) => {
-            if(res.status === 200){
-              if(res.data.code === 200){
-                console.log(res.data.body.vendorId);
-              }
-            }
-          }).catch((err) => {
-            console.log(err);
-          });
+          alert('submit!');
+
         } else {
           console.log('error submit!!');
           return false;
@@ -502,48 +447,18 @@ export default {
     },
     handleLogoAvatarSuccess(res, file) {
       this.ruleForm.imageLogoUrl = URL.createObjectURL(file.raw);
-      this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err);
-      });
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageLogoUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageLogoUrl_plus = '.jpg';
-      }
     },
     handleCardFrontAvatarSuccess(res, file) {
       this.ruleForm.imageCardFrontUrl = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageCardFrontUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageCardFrontUrl_plus = '.jpg';
-      }
     },
     handleCardEndAvatarSuccess(res, file) {
       this.ruleForm.imageCardEndUrl = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageCardEndUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageCardEndUrl_plus = '.jpg';
-      }
     },
     handleBusinessLicenseAvatarSuccess(res, file) {
       this.ruleForm.businessLicenseImg = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.businessLicenseImg_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.businessLicenseImg_plus = '.jpg';
-      }
     },
     handleHygieneLicenseAvatarSuccess(res, file) {
       this.ruleForm.hygieneLicenseImg = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.hygieneLicenseImg_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.hygieneLicenseImg_plus = '.jpg';
-      }
     },
     beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -587,16 +502,8 @@ export default {
           this.center = [this.lng, this.lat];
         });
     },
-    nextStep(value) {
-      this.step_num = value;
-      this.$store.dispatch('next', value);
-    },
-    priorStep(value) {
-      this.step_num = value;
-      this.$store.dispatch('prior', value + 1);
-    },
   },
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -615,7 +522,7 @@ export default {
     font-size: 18px;
   }
   .main{
-    padding: 23px 30px 300px;
+    padding: 23px 30px 30px;
     border: 1px solid #ddd;
     background-color: #fff;
     margin-bottom: 20px;
@@ -690,11 +597,11 @@ export default {
   }
   /*上传图片模块*/
   .avatar-uploader i{
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
     &:hover {
       border-color: #409EFF;
     }
@@ -722,3 +629,4 @@ export default {
     margin-left: 10px;
   }
 </style>
+

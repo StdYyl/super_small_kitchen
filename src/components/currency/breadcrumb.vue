@@ -1,13 +1,11 @@
 <template>
   <div id="app">
-    <div class="headerInner">
-      <el-breadcrumb v-if="breadcrumbList !==undefined && breadcrumbList.length > 0" style="margin: 15px 0;" separator="/">
-        <el-breadcrumb-item v-for="breadcrumb in breadcrumbList" :to="{ path: breadcrumb.path }" :key="breadcrumb.id">{{breadcrumb.title}}</el-breadcrumb-item>
-      </el-breadcrumb>
-      <div style="margin-top:15px;padding-bottom: 20px;font-size: 20px;text-align: left;">
-        {{title}}
-      </div>
-    </div>
+    <el-breadcrumb v-if="breadcrumbList !==undefined && breadcrumbList.length > 0" separator="/">
+      <el-breadcrumb-item v-for="breadcrumb in breadcrumbList" :to="{ path: breadcrumb.path }" :key="breadcrumb.id">{{breadcrumb.title}}</el-breadcrumb-item>
+    </el-breadcrumb>
+    <p style="font: normal 500 20px/56px '微软雅黑';">
+      {{title}}
+    </p>
   </div>
 </template>
 
@@ -42,12 +40,6 @@
 </script>
 
 <style>
-  .headerInner{
-    border: 1px solid #ddd;
-    margin: 35px 0 30px;
-    padding-left: 20px;
-    background: white;
-  }
   .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link{
     font-weight: 400
   }

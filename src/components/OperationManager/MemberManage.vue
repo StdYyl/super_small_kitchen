@@ -40,28 +40,30 @@
             </div>
             <div class="form_item">
               <el-button>重置</el-button>
-              <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="selectInfo">查询</el-button>
             </div>
           </div>
         </el-form>
       </div>
       <div class="main_list">
-        <el-table
-          style="width: 100%;"
-          :data="auditedData"
-          :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-          <el-table-column prop="userName" label="用户名" min-width="1">
-          </el-table-column>
-          <el-table-column prop="registerTime" label="注册时间" min-width="1">
-          </el-table-column>
-          <el-table-column prop="orderNum" label="下单数" min-width="1">
-          </el-table-column>
-          <el-table-column label="操作" min-width="1" :align="'center'">
-            <template slot-scope="scope">
-              <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">查看详情</a>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="table_container">
+          <el-table
+            style="width: 100%;"
+            :data="auditedData"
+            :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+            <el-table-column prop="nickname" label="用户名" min-width="1">
+            </el-table-column>
+            <el-table-column prop="created" label="注册时间" min-width="1">
+            </el-table-column>
+            <el-table-column prop="orderNum" label="下单数" min-width="1">
+            </el-table-column>
+            <el-table-column label="操作" min-width="1" :align="'center'">
+              <template slot-scope="scope">
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">查看详情</a>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <div class="main_more" v-if="auditedData.length!=0">
         <p>已加载全部</p>
@@ -75,25 +77,7 @@ export default {
   name: 'MemberManage',
   data() {
     return {
-      auditedData: [{
-        userName: '张三三',
-        registerTime: '2018-02-06',
-        orderNum: 100,
-      }, {
-        userName: '张三三',
-        registerTime: '2018-02-06',
-        orderNum: 100,
-      }, {
-        userName: '张三三',
-        registerTime: '2018-02-06',
-        orderNum: 100,
-      }, {
-        userName: '张三三',
-        registerTime: '2018-02-06',
-        orderNum: 100,
-      }],
-      checkPendingData: [],
-      rejectedData: [],
+      auditedData: [],
       form: {
         value: '',
         nickname: '',
@@ -103,10 +87,32 @@ export default {
   },
   methods: {
     handleClick(tab, event) {},
-    onSubmit() {
-      console.log('submit!');
+    selectInfo() {
+      console.log(this.form.value);
+      console.log(this.form.nickname);
+      console.log(this.form.registerTel);
+      this.axios.get('api/cgi/m/user/select').then((res) => {
+        if(res.status === 200){
+          if(res.data.code === 200){
+            console.log(res.data.body.list);
+            this.auditedData = res.data.body.list;
+          }
+        }
+      });
     },
   },
+  mounted() {
+    this.axios.get('api/cgi/m/user/select').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          console.log(res.data.body.list);
+          var date = new Date(res.data.body.list.created);
+          var createdTime = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+          this.auditedData = res.data.body.list;
+        }
+      }
+    });
+  }
 };
 </script>
 
@@ -155,6 +161,13 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    min-width: 900px;
+  }
+  .table_container{
+    width: 95%;
+    padding: 20px;
+    border: 1px solid #f5f5f8;
   }
   .el-table{
     flex: 1;

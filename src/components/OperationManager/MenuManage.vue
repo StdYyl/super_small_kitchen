@@ -23,30 +23,40 @@
         </router-link>
       </div>
       <div class="main_list">
-        <el-table
-          :data="auditedData"
-          style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-          <el-table-column label="菜谱封面" width="100" :align="'center'">
-            <template slot-scope="scope">
-              <img :src="'./../../../static/images/role_member.png'" alt="">
-            </template>
-          </el-table-column>
-          <el-table-column prop="menuName" label="菜谱名称" min-width="150">
-          </el-table-column>
-          <el-table-column prop="menuDescription" label="菜谱描述" min-width="150">
-          </el-table-column>
-          <el-table-column prop="menuSource" label="菜谱来源" min-width="150" :align="'center'">
-          </el-table-column>
-          <el-table-column prop="checkState" label="审核状态" min-width="150" :align="'center'">
-          </el-table-column>
-          <el-table-column label="操作" width="250" :align="'center'">
-            <template slot-scope="scope">
-              <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
-              <span>|</span>
-              <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="table_container">
+          <el-table
+            :data="auditedData"
+            style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+            <el-table-column label="菜谱封面" width="100" :align="'center'" prop="cover">
+              <template slot-scope="scope">
+                <div style="display: flex;justify-content: center;align-items: center">
+                  <div :style="'width:60px;height:60px;background:url('+/img/+scope.row.cover+'/360) center center / cover no-repeat;'"></div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="菜谱名称" min-width="1">
+            </el-table-column>
+            <el-table-column prop="description" label="菜谱描述" min-width="1">
+            </el-table-column>
+            <el-table-column prop="vendorInfo.name" label="菜谱来源" min-width="1" :align="'center'">
+            </el-table-column>
+            <el-table-column prop="status" label="审核状态" min-width="1" :align="'center'">
+              <template slot-scope="scope" v-if="scope.row.status === 1">
+                已审核
+              </template>
+              <template slot-scope="scope" v-else>
+                未审核
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="250" :align="'center'">
+              <template slot-scope="scope">
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
+                <span>|</span>
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <div class="main_more" v-if="auditedData.length!=0">
         <p>已加载全部</p>
@@ -82,13 +92,21 @@ export default {
         menuSource: '平台',
         checkState: '已通过',
       }],
-      checkPendingData: [],
-      rejectedData: [],
     };
   },
   methods: {
     handleClick(tab, event) {},
   },
+  mounted() {
+    this.axios.get('api/cgi/m/cookbook/select').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          console.log(res.data.body.list);
+          this.auditedData = res.data.body.list;
+        }
+      }
+    });
+  }
 };
 </script>
 
@@ -104,9 +122,6 @@ export default {
   .title{
     font: normal 500 20px/56px '微软雅黑';
   }
-  div.is-top{
-    font-size: 18px;
-  }
   .main{
     padding: 10px 20px 250px 20px;
     border: 1px solid #ddd;
@@ -119,9 +134,15 @@ export default {
   }
   .main_list{
     width: 100%;
-    min-width: 900px;
     display: flex;
     justify-content: center;
+    overflow: hidden;
+    min-width: 900px;
+  }
+  .table_container{
+    width: 95%;
+    padding: 20px;
+    border: 1px solid #f5f5f8;
   }
   .el-table{
     flex: 1;

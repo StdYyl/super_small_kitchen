@@ -84,8 +84,10 @@ export default {
         "password": this.dynamicValidateForm.pass,
       }).then((res) => {
         if (res.data.code === 200) {
+          res.data.body.manager.pass = this.dynamicValidateForm.pass;
+          console.log(res.data.body.manager);
           this.$store.dispatch('setStorage', res.data.body.manager);
-          this.$router.push('/dashboard/main_page');
+          this.$router.push('/dashboard');
         }
       });
     },
@@ -102,7 +104,7 @@ export default {
   },
   mounted() {
     if (this.$store.getters.getStorage) {
-      this.$router.push('/dashboard/main_page');
+      this.$router.push('/dashboard');
     }
   },
 };

@@ -76,28 +76,30 @@
             <div class="form_container">
               <div class="form_item">
                 <el-form-item label="菜品原料">
-                  <el-table
-                    :data="materialData"
-                    style="width: 100%"
-                    :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-                    <el-table-column prop="materialName" label="材料名" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-input type="text" v-model="materialData.materialName"
-                                  placeholder="请输入材料名"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="materialAmount" label="用量" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-input type="text" v-model="materialData.materialAmount"
-                                  placeholder="请输入用量"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="操作" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-button type="danger" plain>删除</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
+                  <div class="table_container">
+                    <el-table
+                      :data="materialData"
+                      style="width: 100%"
+                      :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+                      <el-table-column prop="materialName" label="材料名" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-input type="text" v-model="materialData.materialName"
+                                    placeholder="请输入材料名"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="materialAmount" label="用量" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-input type="text" v-model="materialData.materialAmount"
+                                    placeholder="请输入用量"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-button type="danger" plain>删除</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
                 </el-form-item>
               </div>
             </div>
@@ -140,43 +142,45 @@
             </div>
             <div class="form_container">
               <div class="form_item">
-                  <el-table
-                    :data="menuStep"
-                    style="width: 100%"
-                    :show-header="false">
-                    <el-table-column width="110" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-upload
-                          class="avatar-uploader"
-                          action="https://jsonplaceholder.typicode.com/posts/"
-                          :show-file-list="false"
-                          :on-success="handleAvatarSuccess"
-                          :before-upload="beforeAvatarUpload">
-                          <img v-if="menuStep.stepImg"
-                               :src="menuStep.stepImg" class="avatar avatar_small">
-                          <i v-else class="el-icon-plus avatar-uploader-icon
+                  <div class="table_container">
+                    <el-table
+                      :data="menuStep"
+                      style="width: 100%"
+                      :show-header="false">
+                      <el-table-column width="110" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-upload
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                            <img v-if="menuStep.stepImg"
+                                 :src="menuStep.stepImg" class="avatar avatar_small">
+                            <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small"></i>
-                        </el-upload>
-                      </template>
-                    </el-table-column>
-                    <el-table-column width="200px" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-input type="textarea" v-model="menuStep.stepDetail"
-                                  placeholder="请输入步骤详情" style="width: 100%"></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column width="90" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-button type="danger" plain>删除</el-button>
-                      </template>
-                    </el-table-column>
-                    <el-table-column width="130" :align="'center'">
-                      <template slot-scope="scope">
-                        <el-button type="default"
-                                   plain @click="dialogTagVisible=true">绑定指令集</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
+                          </el-upload>
+                        </template>
+                      </el-table-column>
+                      <el-table-column width="200px" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-input type="textarea" v-model="menuStep.stepDetail"
+                                    placeholder="请输入步骤详情" style="width: 100%"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column width="90" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-button type="danger" plain>删除</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column width="130" :align="'center'">
+                        <template slot-scope="scope">
+                          <el-button type="default"
+                                     plain @click="dialogTagVisible=true">绑定指令集</el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
               </div>
             </div>
             <div class="form_container">
@@ -427,10 +431,20 @@ export default {
       width: 100%;
       display: flex;
       .form_left{
-        width: 400px;
+        flex: 4;
+        .form_container{
+          width: 100%;
+          .form_item{
+            width: 100%;
+            .table_container{
+              width: 95%;
+              border: 1px solid #f5f5f8;
+            }
+          }
+        }
       }
       .form_right{
-        width: 600px;
+        flex: 6;
         margin-left: 20px;
       }
       .form_container{

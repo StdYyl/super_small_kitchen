@@ -3,7 +3,7 @@
     <div class="menu_wrapper">
       <dl>
         <dt class="first">
-          <router-link to="/dashboard/main_page" tag="a">
+          <router-link to="/dashboard" tag="a">
             <svg-icon icon-class="home"></svg-icon>
             <span>首页</span>
           </router-link>
@@ -115,9 +115,9 @@ export default {
 <style scoped>
   .sidebar_container{
     flex: 2;
-    margin-top: 20px;
     padding-left: 50px;
-    min-width: 230px;
+    margin-top: 20px;
+    min-width: 150px;
   }
   .menu_wrapper{
     margin: 20px 0;

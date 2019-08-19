@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/img": {
-        target: "https://image.chaoxiaochu.com", //设置调用的接口域名和端口
+        target: "https://image.chaoxiaochu.com/", //设置调用的接口域名和端口
         changeOrigin: true,
         pathRewrite: {
           '^/img': ''

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <breadcrumb></breadcrumb>
+    <div class="header">
+      <breadcrumb></breadcrumb>
+    </div>
     <div class="categoryTable" id="cookCategory">
       <el-button @click="categoryAdd(0)" style="float: right" type="primary">菜谱分类添加</el-button>
       <div style="clear: both;"></div>
@@ -15,7 +17,7 @@
           align="center"
           width="80">
           <template slot-scope="scope">
-            <div class="cover" :style="{'background': 'url('+/img/+scope.row.cover+'/360'+') center center /cover no-repeat'}"></div>
+            <div class="cover" :style="{'background': 'url('+/img/+scope.row.cover+'/360'+')center center /cover no-repeat'}"></div>
           </template>
         </el-table-column>
         <el-table-column
@@ -118,6 +120,14 @@
 </script>
 <style>
   /*以下样式不会影响全局*/
+  .header{
+    margin: 34px 0 20px 0 ;
+    padding-left: 20px;
+    padding-top: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-weight: 400;
+  }
   #cookCategory .el-table__row:nth-of-type(1) .cell{
     height: 32px;
     line-height: 32px;

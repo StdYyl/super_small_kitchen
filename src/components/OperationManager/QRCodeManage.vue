@@ -13,32 +13,34 @@
       </div>
       <div class="main" v-if="activeName=='first'">
         <div class="main_list">
-          <el-table
-            :data="auditedData"
-            style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-            <el-table-column prop="menuName" label="菜谱名称" min-width="1" :align="'center'">
-            </el-table-column>
-            <el-table-column label="菜谱封面" min-width="1" :align="'center'">
-              <template slot-scope="scope">
-                <img :src="'./../../../static/images/role_member.png'" alt="">
-              </template>
-            </el-table-column>
-            <el-table-column prop="qrCode" label="二维码" min-width="1" :align="'center'">
-              <template slot-scope="scope">
-                <div style="display: flex;flex-direction: column;
-                align-items: center;justify-content: center">
+          <div class="table_container">
+            <el-table
+              :data="auditedData"
+              style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+              <el-table-column prop="menuName" label="菜谱名称" min-width="1" :align="'center'">
+              </el-table-column>
+              <el-table-column label="菜谱封面" min-width="1" :align="'center'">
+                <template slot-scope="scope">
                   <img :src="'./../../../static/images/role_member.png'" alt="">
-                  <span>{{scope.row.qrCode.name}}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" min-width="1" :align="'center'">
-              <template slot-scope="scope">
-                <a :href="'./../../../static/images/role_member.png'"
-                   style="color:#409eff;" download="">下载</a>
-              </template>
-            </el-table-column>
-          </el-table>
+                </template>
+              </el-table-column>
+              <el-table-column prop="qrCode" label="二维码" min-width="1" :align="'center'">
+                <template slot-scope="scope">
+                  <div style="display: flex;flex-direction: column;
+                align-items: center;justify-content: center">
+                    <img :src="'./../../../static/images/role_member.png'" alt="">
+                    <span>{{scope.row.qrCode.name}}</span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" min-width="1" :align="'center'">
+                <template slot-scope="scope">
+                  <a :href="'./../../../static/images/role_member.png'"
+                     style="color:#409eff;" download="">下载</a>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
         </div>
         <div class="main_more" v-if="auditedData.length!=0">
           <p>已加载全部</p>
@@ -97,9 +99,6 @@ export default {
   .title{
     font: normal 500 20px/56px '微软雅黑';
   }
-  div.is-top{
-    font-size: 18px;
-  }
   .main{
     padding: 20px 30px 250px 30px;
     border: 1px solid #ddd;
@@ -109,7 +108,13 @@ export default {
     width: 100%;
     min-width: 900px;
     display: flex;
+    overflow: hidden;
     justify-content: center;
+  }
+  .table_container{
+    width: 95%;
+    padding: 20px;
+    border: 1px solid #f5f5f8;
   }
   .el-table{
     flex: 1;

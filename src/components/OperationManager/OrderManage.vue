@@ -102,33 +102,7 @@ export default {
   name: 'OrderManage',
   data() {
     return {
-      auditedData: [{
-        orderId: '21sdawddad22454fa',
-        orderTime: '2017-02-08',
-        receivePerson: 'yangyangyang',
-        moneyNote: '30.90',
-        orderState: '待收货',
-      }, {
-        orderId: '21sdawddad22454fa',
-        orderTime: '2017-02-08',
-        receivePerson: 'yangyangyang',
-        moneyNote: '30.90',
-        orderState: '待收货',
-      }, {
-        orderId: '21sdawddad22454fa',
-        orderTime: '2017-02-08',
-        receivePerson: 'yangyangyang',
-        moneyNote: '30.90',
-        orderState: '待收货',
-      }, {
-        orderId: '21sdawddad22454fa',
-        orderTime: '2017-02-08',
-        receivePerson: 'yangyangyang',
-        moneyNote: '30.90',
-        orderState: '待收货',
-      }],
-      checkPendingData: [],
-      rejectedData: [],
+      auditedData: [],
       form: {
         kitchen: '',
         store: '',
@@ -144,6 +118,16 @@ export default {
       console.log('submit!');
     },
   },
+  mounted() {
+    this.axios.get('api/cgi/m/order/select').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          console.log(res.data.body.list);
+          this.auditedData = res.data.body.list;
+        }
+      }
+    });
+  }
 };
 </script>
 
@@ -159,9 +143,6 @@ export default {
   .title{
     font: normal 500 20px/56px '微软雅黑';
   }
-  div.is-top{
-    font-size: 18px;
-  }
   .main{
     padding: 18px 30px;
     border: 1px solid #ddd;
@@ -170,10 +151,9 @@ export default {
   .main_hd{
     text-align: right;
     padding: 10px 0;
-    min-width: 900px;
     font-size: 14px;
+    min-width: 900px;
   }
-
   .form_container{
     padding: 0 0 20px 0;
     display: flex;
@@ -192,9 +172,10 @@ export default {
     display: flex;
     justify-content: center;
     overflow: hidden;
+    min-width: 900px;
   }
   .table_container{
-    width: 100%;
+    width: 95%;
     padding: 20px;
     border: 1px solid #f5f5f8;
   }

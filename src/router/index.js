@@ -5,11 +5,12 @@ import DashBoard from './../pages/DasgBoard/DashBoard';
 import MainPage from './../components/MainPage';
 import CentralKitchenManage from '../components/CooperationManager/CentralKitchenManage';
 import OperationStoreManage from '../components/CooperationManager/OperationStoreManage';
+import StoreAdd from '../components/CooperationManager/AddStore';
+import StoreEdit from '../components/CooperationManager/EditStore';
 import OrderManage from '../components/OperationManager/OrderManage';
 import MemberManage from '../components/OperationManager/MemberManage';
 import CommodityStoreManage from '../components/OperationManager/CommodityStoreManage';
 import MenuManage from '../components/OperationManager/MenuManage';
-import StoreAdd from '../components/CooperationManager/AddStore';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
@@ -47,23 +48,37 @@ export default new VueRouter({
       meta:{title:'首页'},
       children: [
         {
-          path: 'main_page',
+          path: '',
           component: MainPage,
         },
         {
           path: 'cooperationManger/centralKitchenManage',
+          name: 'centralKitchenManage',
+          meta: { title: '中央厨房管理' },
           component: CentralKitchenManage,
         },
         {
           path: 'cooperationManger/centralKitchenManage/add',
+          name: 'StoreAdd',
+          meta: { title: '中央厨房添加' },
           component: StoreAdd,
         },
         {
+          path: 'cooperationManger/centralKitchenManage/edit/:vendorId',
+          name: 'StoreEdit',
+          meta: { title: '中央厨房编辑' },
+          component: StoreEdit,
+        },
+        {
           path: 'cooperationManger/cooperationStoreManage',
+          name: 'cooperationStoreManage',
+          meta: { title: '合作门店管理' },
           component: OperationStoreManage,
         },
         {
           path: 'operationManger/orderManage',
+          name: 'centralKitchenManage',
+          meta: { title: '订单管理' },
           component: OrderManage,
         },
         {

@@ -110,9 +110,6 @@ export default {
   .title{
     font: normal 500 20px/56px '微软雅黑';
   }
-  div.is-top{
-    font-size: 18px;
-  }
   .main{
     padding: 18px 30px;
     border: 1px solid #ddd;
@@ -142,9 +139,11 @@ export default {
     display: flex;
     justify-content: center;
     overflow: hidden;
+    min-width: 900px;
   }
   .table_container{
-    width: 100%;
+    width: 95%;
+    padding: 20px;
     border: 1px solid #f5f5f8;
   }
   .el-table{
