@@ -72,7 +72,6 @@
     data() {
       return {
         cookBookList:[],
-        imageUrl:'',
         ruleForm: {
           cookCategoryId:'',
           parentId:'',
