@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          提现管理</el-breadcrumb-item>
-        <el-breadcrumb-item>提现管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">提现管理</p>
+      <breadcrumb></breadcrumb>
       <el-tabs v-model="activeName">
         <el-tab-pane label="未打款" name="first"></el-tab-pane>
         <el-tab-pane label="已打款" name="second"></el-tab-pane>
@@ -20,7 +13,7 @@
           <div class="form_container">
             <div class="form_item">
               <span>打款方式:</span>
-              <el-select v-model="form.payMethod" placeholder="请选择" style="width: 300px;">
+              <el-select v-model="form.payMethod" placeholder="请选择" style="width: 300px;" value="">
                 <el-option label="全部" value="全部"></el-option>
                 <el-option label="支付宝付款" value="支付宝付款"></el-option>
                 <el-option label="微信付款" value="微信付款"></el-option>
@@ -63,7 +56,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="main_more" v-if="auditedData.length!=0">
+          <div class="main_more" v-if="auditedData.length!==0">
             <p>已加载全部</p>
           </div>
         </div>
@@ -73,8 +66,10 @@
 </template>
 
 <script>
+import Breadcrumb from '../currency/breadcrumb';
 export default {
-  name: 'CashOutManage',
+  name: 'backMoney',
+  components: { Breadcrumb },
   data() {
     return {
       activeName: 'first',

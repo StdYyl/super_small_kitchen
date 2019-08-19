@@ -13,6 +13,14 @@
 <style lang="scss">
   /*以下样式将被所有菜谱相关页面继承*/
   #goodsCategoryIndex {
+    .header{
+      margin: 34px 0 20px 0 ;
+      padding-left: 20px;
+      padding-top: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      font-weight: 400;
+    }
     .el-table th, .el-table tr {
       background: none;
     }

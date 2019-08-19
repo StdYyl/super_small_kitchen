@@ -1,14 +1,7 @@
 <template>
     <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          中央厨房结算</el-breadcrumb-item>
-        <el-breadcrumb-item>中央厨房结算</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">中央厨房结算</p>
+      <breadcrumb></breadcrumb>
     </div>
     <div class="main">
       <div class="main_hd">
@@ -47,7 +40,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="main_more" v-if="auditedData.length!=0">
+          <div class="main_more" v-if="auditedData.length!==0">
             <p>已加载全部</p>
           </div>
         </div>
@@ -57,29 +50,31 @@
 </template>
 
 <script>
+import Breadcrumb from '../currency/breadcrumb';
 export default {
-  name: 'CentralKitchenSettlement',
+  name: 'vendorAccount',
+  components: { Breadcrumb },
   data() {
     return {
       auditedData: [{
         centralKitchen: '21sdawddad22454fa',
         orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
+        exceptionOrderCount: '1',
         orderAmount: '30.90',
       }, {
         centralKitchen: '21sdawddad22454fa',
         orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
+        exceptionOrderCount: '2',
         orderAmount: '30.90',
       }, {
         centralKitchen: '21sdawddad22454fa',
         orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
+        exceptionOrderCount: '1',
         orderAmount: '30.90',
       }, {
         centralKitchen: '21sdawddad22454fa',
         orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
+        exceptionOrderCount: '2',
         orderAmount: '30.90',
       }],
       checkPendingData: [],

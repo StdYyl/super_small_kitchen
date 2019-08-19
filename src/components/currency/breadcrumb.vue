@@ -3,7 +3,7 @@
     <el-breadcrumb v-if="breadcrumbList !==undefined && breadcrumbList.length > 0" separator="/">
       <el-breadcrumb-item v-for="breadcrumb in breadcrumbList" :to="{ path: breadcrumb.path }" :key="breadcrumb.id">{{breadcrumb.title}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <p style="font: normal 500 20px/56px '微软雅黑';">
+    <p style="font: normal 400 20px/56px '微软雅黑';">
       {{title}}
     </p>
   </div>

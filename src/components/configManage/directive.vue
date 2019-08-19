@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="directive">
-    <breadcrumb></breadcrumb>
+    <div class="header">
+      <breadcrumb></breadcrumb>
+    </div>
     <div class="directiveTable" id="directive">
       <el-button @click="directiveAdd" style="float: right" type="primary">添加指令</el-button>
       <div style="clear: both;"></div>
@@ -221,6 +223,14 @@
   }
   /*以下样式将被所有菜谱相关页面继承*/
   .directive {
+    .header{
+      margin: 34px 0 20px 0 ;
+      padding-left: 20px;
+      padding-top: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      font-weight: 400;
+    }
   .el-table th, .el-table tr {
     background: none;
   }

@@ -69,18 +69,18 @@
           </router-link>
         </dt>
         <dd>
-          <router-link to="/dashboard/financialSettlement/centralKitchenSettlement"
+          <router-link to="/dashboard/accountManage/vendorAccount"
                        tag="a">中央厨房结算</router-link>
         </dd>
         <dd>
-          <router-link to="/dashboard/financialSettlement/cashOutManage" tag="a">提现管理</router-link>
+          <router-link to="/dashboard/accountManage/backMoney" tag="a">提现管理</router-link>
         </dd>
         <dd>
-          <router-link to="/dashboard/financialSettlement/distributorManage"
+          <router-link to="/dashboard/accountManage/salesperson"
                        tag="a">分销员管理</router-link>
         </dd>
         <dd>
-          <router-link to="/dashboard/financialSettlement/distributionCommissionSetting"
+          <router-link to="/dashboard/accountManage/brokerage"
                        tag="a">分销佣金设置</router-link>
         </dd>
       </dl>
