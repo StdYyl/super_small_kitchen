@@ -2,7 +2,7 @@
 <div>
   <breadcrumb></breadcrumb>
   <div class="categoryTable">
-    <el-button @click="add" style="float: right" type="primary">菜谱分类添加</el-button>
+    <el-button @click="add" style="float: right" type="primary">分类添加</el-button>
     <div style="clear: both;"></div>
     <el-table
       :header-cell-style="{background: '#f5f5f8'}"
@@ -71,10 +71,10 @@
 </template>
 
 <script>
-  import {getCookBookList} from '@/api/cookBook';
+  import {getCookBookList,delCookBookCategory} from '@/api/cookCategory';
   import breadcrumb from '@/components/currency/breadcrumb';
   export default {
-    name: 'categoryChild',
+    name: 'cookCategoryChild',
     components:{breadcrumb},
     data() {
       return {
@@ -88,21 +88,45 @@
         });
       },
       del:function (id) {
-        ;
+        var form = {};
+        form.cookCategoryId = id;
+        this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delCookBookCategory(form).then(value => {
+            if (value.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              });
+              this.init();
+            }else {
+              this.$message({
+                type: 'error',
+                message: value.desc
+              });
+            }
+          });
+        })
       },
       add:function () {
         this.$router.push({
           path : '../add/' + this.$route.params.id
         });;
+      },
+      init:function () {
+        getCookBookList(this.$route.params.id).then(val => {
+          this.tableData = val;
+          for (var i = 0; i < this.tableData.length; i++) {
+            this.$set(this.tableData[i], 'inputStatus', false);
+          }
+        });
       }
     },
     mounted() {
-      getCookBookList(this.$route.params.id).then(val => {
-        this.tableData = val;
-        for (var i = 0; i < this.tableData.length; i++) {
-          this.$set(this.tableData[i], 'inputStatus', false);
-        }
-      });
+      this.init();
     }
   };
 </script>

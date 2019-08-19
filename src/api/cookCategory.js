@@ -19,11 +19,19 @@ export async function getCookBookCategory(cookCategoryId) {
 }
 //管理员修改某菜谱分类信息
 export async function editCookBookCategory(form) {
-  var url = 'api/cgi//m0/cookbook/category/revise';
-  if (form !== undefined) {
-    url+=`?cookCategoryId=${cookCategoryId}`;
-  }
-  let res = await requested(url,'post');
-  return res.data.body;
+  var url = 'api/cgi/m0/cookbook/category/revise';
+  let res = await requested(url,'post',form);
+  return res.data;
 }
-
+//管理员删除某菜谱分类
+export async function delCookBookCategory(form) {
+  var url = 'api/cgi/m0/cookbook/category/remove';
+  let res = await requested(url,'post',form);
+  return res.data;
+}
+//管理员创建菜谱分类
+export async function addCookBookCategory(form) {
+  var url = 'api/cgi/m0/cookbook/category/create';
+  let res = await requested(url,'post',form);
+  return res.data;
+}

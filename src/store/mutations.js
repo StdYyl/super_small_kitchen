@@ -5,6 +5,7 @@ import {
   FIND,
   NEXT,
   PRIOR,
+  CLEAR_FROM,
   KEY,
   SET_STORAGE,
   REMOVE_STORAGE
@@ -37,7 +38,13 @@ export default {
     }
   },
   [CHANGE_POS](state, { item }) {
+    console.log('change_pos');
     state.city = [item[0], item[1], item[2]];
+  },
+  [CLEAR_FROM](state){
+    for(let i in state.registerForm){
+      state.registerForm[i] = '';
+    }
   },
   [SET_STORAGE](state, { item }) {
     console.log('SET_STORAGE');

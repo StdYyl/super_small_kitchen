@@ -1,10 +1,8 @@
 <template>
   <div id="app">
-    <div class="header">
-      <breadcrumb></breadcrumb>
-    </div>
-    <div class="categoryTable" id="cookCategory">
-      <el-button @click="categoryAdd(0)" style="float: right" type="primary">菜谱分类添加</el-button>
+    <breadcrumb></breadcrumb>
+    <div class="categoryTable" id="goodsCategory">
+      <el-button @click="categoryAdd(0)" style="float: right" type="primary">商品分类添加</el-button>
       <div style="clear: both;"></div>
       <el-table
         :header-cell-style="{background: '#f5f5f8'}"
@@ -17,7 +15,7 @@
           align="center"
           width="80">
           <template slot-scope="scope">
-            <div class="cover" :style="{'background': 'url('+/img/+scope.row.cover+'/360'+')center center /cover no-repeat'}"></div>
+            <div class="cover" :style="{'background': 'url('+/img/+scope.row.cover+'/360'+') center center /cover no-repeat'}"></div>
           </template>
         </el-table-column>
         <el-table-column
@@ -66,9 +64,9 @@
               @click="editNow(scope)"
               :style="scope.row.inputStatus === true?'color:#35c1c2':'color:#409eff'">
               {{scope.row.inputStatus ? '确定':'修改'}}</span>
-            <span @click="categoryChild(scope.row.cookCategoryId)">子分类</span>
-            <span @click="categoryEdit(scope.row.cookCategoryId)">编辑</span>
-            <span @click="categoryDel(scope.row.cookCategoryId)" style="color: #fe6a58">删除</span>
+            <span @click="categoryChild(scope.row.categoryId)">子分类</span>
+            <span @click="categoryEdit(scope.row.categoryId)">编辑</span>
+            <span @click="categoryDel(scope.row.categoryId)" style="color: #fe6a58">删除</span>
           </span>
           </template>
         </el-table-column>
@@ -78,10 +76,10 @@
 </template>
 
 <script>
-  import {getCookBookList,editCookBookCategory,delCookBookCategory} from '@/api/cookCategory';
+  import {getGoodsCategoryList,editGoodsCategory,delGoodsCategory} from '@/api/goodsCategory';
   import breadcrumb from '@/components/currency/breadcrumb';
   export default {
-    name:"cookCategory",
+    name:"goodsCategory",
     components:{breadcrumb},
     data() {
       return {
@@ -91,23 +89,23 @@
     methods: {
       categoryChild:function (id) {
         this.$router.push({
-          path : 'cookCategory/child/' + id
+          path : 'goodsCategory/child/' + id
         });
       },
       categoryEdit:function (id) {
         this.$router.push({
-          path : 'cookCategory/edit/' + id
+          path : 'goodsCategory/edit/' + id
         });
       },
       categoryDel:function (id) {
         var form = {};
-        form.cookCategoryId = id;
+        form.categoryId = id;
         this.$confirm('此操作将永久删除该分类（包括其子分类）, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delCookBookCategory(form).then(value => {
+          delGoodsCategory(form).then(value => {
             if (value.code === 200) {
               this.$message({
                 type: 'success',
@@ -125,13 +123,13 @@
       },
       categoryAdd:function (id) {
         this.$router.push({
-          path : 'cookCategory/add/' + id
+          path : 'goodsCategory/add/' + id
         });;
       },
       editNow:function (scope) {
         let form = scope.row;
         if (scope.row.inputStatus) {
-          editCookBookCategory(form).then(value => {
+          editGoodsCategory(form).then(value => {
             if (value.code === 200) {
               this.$message({
                 type: 'success',
@@ -149,7 +147,7 @@
         scope.row.inputStatus = scope.row.inputStatus !== true;
       },
       init:function () {
-        getCookBookList().then(val => {
+        getGoodsCategoryList().then(val => {
           this.tableData = val;
           for (var i = 0; i < this.tableData.length; i++) {
             this.$set(this.tableData[i], 'inputStatus', false);
@@ -164,19 +162,11 @@
 </script>
 <style>
   /*以下样式不会影响全局*/
-  .header{
-    margin: 34px 0 20px 0 ;
-    padding-left: 20px;
-    padding-top: 20px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    font-weight: 400;
-  }
-  #cookCategory .el-table__row:nth-of-type(1) .cell{
+  #goodsCategory .el-table__row:nth-of-type(1) .cell{
     height: 32px;
     line-height: 32px;
   }
-  #cookCategory .el-input__inner{
+  #goodsCategory .el-input__inner{
     height: 32px;
   }
 

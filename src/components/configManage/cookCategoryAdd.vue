@@ -1,12 +1,15 @@
 <template>
-  <div id="categoryEdit">
+  <div id="categoryAdd">
     <breadcrumb></breadcrumb>
     <div class="categoryTable">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="上级分类">
           <el-select v-model="ruleForm.region" placeholder="请选择上级分类" value="ruleForm.region">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option
+              v-for="cookCategoryItem in cookBookList"
+              :key="cookCategoryItem.cookCategoryId"
+              :label="cookCategoryItem.name"
+              :value="cookCategoryItem.cookCategoryId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="分类名称" prop="name">
@@ -28,10 +31,11 @@
               :on-change="handleImg"
               accept="image/png,image/gif,image/jpg,image/jpeg"
               :before-upload="beforeUpLoad">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+              <img v-if="imageUrl" :src="/img/ + imageUrl + '/360'" class="avatar" alt="">
+              <img v-else-if="ruleForm.cover" :src="/img/ + ruleForm.cover + '/360'" class="avatar" alt="">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-<!--            <img :src="/img/ + ruleForm.cover + '/360'" alt="">-->
+            <!--            <img :src="/img/ + ruleForm.cover + '/360'" alt="">-->
           </div>
 
         </el-form-item>
@@ -49,7 +53,7 @@
           <el-input type="textarea" v-model="ruleForm.description"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即更新</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">立即添加</el-button>
           <el-button @click="resetForm">取消</el-button>
         </el-form-item>
       </el-form>
@@ -58,13 +62,14 @@
 </template>
 
 <script>
-  import {getCookBookCategory,editCookBookCategory} from '@/api/cookBook';
+  import {getCookBookCategory,getCookBookList,addCookBookCategory} from '@/api/cookCategory';
   import breadcrumb from '@/components/currency/breadcrumb';
   export default {
-    name: 'categoryEdit',
+    name: 'cookCategoryAdd',
     components:{breadcrumb},
     data() {
       return {
+        cookBookList:[],
         imageUrl:'',
         ruleForm: {
           cookCategoryId:'',
@@ -87,7 +92,7 @@
             { required: true, message: '请填写顺序', trigger: 'blur' },
           ],
           cover:[
-            { required: true, message: '请上次分类图片', trigger: 'blur' },
+            { required: true, message: '请上传分类图片', trigger: 'blur' },
           ],
         }
 
@@ -117,6 +122,21 @@
                 tag.push(item);
             this.ruleForm.tags = tag;*/
             //over
+            addCookBookCategory(this.ruleForm).then(value => {
+              if (value.code === 200) {
+                this.$router.back(-1);
+                this.$message({
+                  type: 'success',
+                  message: '添加成功'
+                });
+                this.init();
+              }else {
+                this.$message({
+                  type: 'error',
+                  message: value.desc
+                });
+              }
+            });
             console.log(this.ruleForm);
             //console.log(editCookBookCategory(this.ruleForm));
           } else {
@@ -127,15 +147,22 @@
       },
       resetForm() {
         this.$router.back(-1);
+      },
+      init:function () {
+        getCookBookCategory(this.$route.params.id).then(val => {
+          //登录实现后，将该语句改为
+          //this.ruleForm.parentId = val.parentId;
+          this.ruleForm.region = val.cookCategoryId;
+          //this.ruleForm = {"code":200,"body":{"cookCategoryId":"RQP8HV8GDLL5Z96","parentId":"","name":"营养早餐","cover":"d0/cookCategory/190219/y630codxqplokk61.jpg","description":"营养早餐，真的棒666","tags":{"hot":true,"search":false},"sort":1,"status":1},"time":1565943605947}.body;
+        });
+        this.imageUrl = this.ruleForm.cover;
+        getCookBookList().then(val => {
+          this.cookBookList = val;
+        });
       }
     },
     mounted() {
-
-      getCookBookCategory(this.$route.params.id).then(val => {
-        //登录实现后，将该语句改为 this.ruleForm = val;
-        this.ruleForm = {"code":200,"body":{"cookCategoryId":"RQP8HV8GDLL5Z96","parentId":"","name":"营养早餐","cover":"d0/cookCategory/190219/y630codxqplokk61.jpg","description":"营养早餐，真的棒666","tags":{"hot":true,"search":false},"sort":1,"status":1},"time":1565943605947}.body;
-      });
-      this.imageUrl = this.ruleForm.cover;
+      this.init();
     }
   };
 </script>
@@ -169,10 +196,10 @@
     height: 100px;
     display: block;
   }
-  #categoryEdit .el-input__inner{
+  #categoryAdd .el-input__inner{
     width: 300px;
   }
-  #categoryEdit .el-textarea__inner{
+  #categoryAdd .el-textarea__inner{
     width: 400px;
   }
   .categoryImgLine {
@@ -182,10 +209,10 @@
     border-radius: 6px;
     cursor: pointer;
 
-    img {
-      height: 100px;
-      width: 100px;
-    }
+  img {
+    height: 100px;
+    width: 100px;
+  }
 
   }
 </style>

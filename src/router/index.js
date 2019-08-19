@@ -13,18 +13,29 @@ import CommodityStoreManage from '../components/OperationManager/CommodityStoreM
 import MenuManage from '../components/OperationManager/MenuManage';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
+import postManagement from '../components/systemManager/postManagement';
+import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
 import RegisterNav from '../pages/Register/register';
+//配置管理
+import Register from '../pages/Register/register';
 import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
 import CookCategory from '../components/configManage/cookCategory';
-import CategoryAdd from '../components/configManage/categoryAdd';
-import CategoryEdit from '../components/configManage/categoryEdit';
-import CategoryChild from '../components/configManage/categoryChild';
+import CookCategoryAdd from '../components/configManage/cookCategoryAdd';
+import CookCategoryEdit from '../components/configManage/cookCategoryEdit';
+import CookCategoryChild from '../components/configManage/cookCategoryChild';
+import GoodsCategoryIndex from '../components/configManage/goodsCategoryIndex';
+import GoodsCategory from '../components/configManage/goodsCategory';
+import GoodsCategoryAdd from '../components/configManage/goodsCategoryAdd';
+import GoodsCategoryEdit from '../components/configManage/goodsCategoryEdit';
+import GoodsCategoryChild from '../components/configManage/goodsCategoryChild';
+import Directive from '../components/configManage/Directive';
+//配置管理/
 import CentralKitchenSettlement from '../components/FinancialSettlement/CentralKitchenSettlement';
 import CashOutManage from '../components/FinancialSettlement/CashOutManage';
 import DistributorManage from '../components/FinancialSettlement/DistributorManage';
 import DistributionCommissionSetting from '../components/FinancialSettlement/DistributionCommissionSetting';
-import BasicInformation from '../components/register/infoRegistration';
+import recommendManagement from '../components/systemManager/recommendManagement';
 
 Vue.use(VueRouter);
 
@@ -40,7 +51,7 @@ export default new VueRouter({
     },
     {
       path: '/register',
-      component: RegisterNav,
+      component: Register,
     },
     {
       path: '/dashboard',
@@ -107,6 +118,7 @@ export default new VueRouter({
           meta: { title: '二维码管理' },
           component: QRCodeManage,
         },
+        //配置管理/菜谱分类
         {
           path: 'configManage/cookCategory',
           meta: { title: '菜谱分类' },
@@ -120,23 +132,62 @@ export default new VueRouter({
             },
             {
               path: 'add/:id',
-              name: 'categoryAdd',
+              name: 'cookCategoryAdd',
               meta: { title: '分类添加' },
-              component: CategoryAdd,
+              component: CookCategoryAdd,
             },
             {
               path: 'edit/:id',
-              name: 'categoryEdit',
+              name: 'cookCategoryEdit',
               meta: { title: '分类编辑' },
-              component: CategoryEdit,
+              component: CookCategoryEdit,
             },
             {
               path: 'child/:id',
-              name: 'categoryAdChild',
+              name: 'cookCategoryChild',
               meta: { title: '子分类列表' },
-              component: CategoryChild,
+              component: CookCategoryChild,
             },
           ],
+        },
+        //配置管理/商品分类
+        {
+          path: 'configManage/goodsCategory',
+          meta: { title: '商品分类' },
+          component: GoodsCategoryIndex,
+          children:[
+            {
+              path: '',
+              name: 'goodsCategory',
+              meta: { title: '商品分类' },
+              component: GoodsCategory,
+            },
+            {
+              path: 'add/:id',
+              name: 'goodsCategoryAdd',
+              meta: { title: '分类添加' },
+              component: GoodsCategoryAdd,
+            },
+            {
+              path: 'edit/:id',
+              name: 'goodsCategoryEdit',
+              meta: { title: '分类编辑' },
+              component: GoodsCategoryEdit,
+            },
+            {
+              path: 'child/:id',
+              name: 'goodsCategoryChild',
+              meta: { title: '子分类列表' },
+              component: GoodsCategoryChild,
+            },
+          ],
+        },
+        //配置管理/指令管理
+        {
+          path: 'configManage/directive',
+          name: 'directive',
+          meta: { title: '指令管理' },
+          component: Directive,
         },
         {
           path: 'financialSettlement/centralKitchenSettlement',
@@ -162,6 +213,28 @@ export default new VueRouter({
           meta: { title: '分销员管理' },
           component: DistributionCommissionSetting,
         },
+        {
+          path:'systemManager/postManagement',
+          component: postManagement
+        },
+        {
+          path:'systemManager/adminManagement',
+          component: adminManagement,
+          children:[
+            {
+              path:'add',
+              redirect:false,
+            },
+            {
+              path:'editor/:a',
+              redirect:false,
+            },
+          ]
+        },
+        {
+          path:'systemManager/recommendManagement',
+          component:recommendManagement
+        }
       ],
     },
   ],

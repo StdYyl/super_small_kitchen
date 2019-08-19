@@ -56,8 +56,8 @@
         <dd>
           <router-link to="/dashboard/configManage/cookCategory" tag="a">菜谱分类</router-link>
         </dd>
-        <dd>商品分类</dd>
-        <dd>指令管理</dd>
+        <dd><router-link to="/dashboard/configManage/goodsCategory" tag="a">商品分类</router-link></dd>
+        <dd><router-link to="/dashboard/configManage/directive" tag="a">指令管理</router-link></dd>
       </dl>
     </div>
     <div class="menu_wrapper">
@@ -88,14 +88,18 @@
     <div class="menu_wrapper">
       <dl>
         <dt>
-          <router-link to="" tag="a">
             <svg-icon icon-class="tree"></svg-icon>
             <span>系统管理</span>
-          </router-link>
         </dt>
-        <dd>岗位管理</dd>
-        <dd>管理员管理</dd>
-        <dd>推荐位管理</dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/postManagement">岗位管理</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/adminManagement">管理员管理</router-link>
+        </dd>
+        <dd>
+          <router-link to="/dashboard/systemManager/recommendManagement">推荐位管理</router-link>
+        </dd>
         <dd>通知管理</dd>
         <dd>指令集管理</dd>
       </dl>
