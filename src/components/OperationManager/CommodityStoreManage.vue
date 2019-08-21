@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          商品库管理</el-breadcrumb-item>
-        <el-breadcrumb-item>商品库管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">商品库管理</p>
+      <BreadCrumb></BreadCrumb>
     </div>
     <div class="main" v-if="activeName=='first'">
       <div class="main_hd">
@@ -48,6 +41,7 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 export default {
   name: 'CommodityStoreManage',
   data() {
@@ -68,6 +62,9 @@ export default {
         }
       }
     });
+  },
+  components: {
+    BreadCrumb,
   }
 };
 </script>

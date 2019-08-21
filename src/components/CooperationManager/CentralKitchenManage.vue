@@ -1,7 +1,7 @@
 <template>
     <div>
       <div class="header">
-        <breadcrumb></breadcrumb>
+        <BreadCrumb></BreadCrumb>
         <el-tabs v-model="activeName">
           <el-tab-pane label="已审核" name="first"></el-tab-pane>
           <el-tab-pane label="待审核" name="second"></el-tab-pane>
@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import breadcrumb from '@/components/currency/breadcrumb';
+import BreadCrumb from '../BreadCrumb';
 export default {
   name: 'CentralKitchenManage',
   data() {
@@ -131,9 +131,6 @@ export default {
   },
   methods: {
     handleClick(tab, event) {},
-  },
-  components: {
-    breadcrumb
   },
   mounted() {
     this.axios.get('api/cgi/m0/vendor/select?auditStatus=approved').then((res) => {
@@ -158,6 +155,9 @@ export default {
         }
       }
     });
+  },
+  components: {
+    BreadCrumb,
   }
 };
 </script>
@@ -170,9 +170,6 @@ export default {
     border: 1px solid #ddd;
     background-color: #fff;
     font-weight: 400;
-  }
-  .title{
-    font: normal 500 20px/56px '微软雅黑';
   }
   .main{
     padding: 10px 20px 250px 20px;

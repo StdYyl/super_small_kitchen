@@ -77,8 +77,6 @@ export default {
         exceptionOrderCount: '2',
         orderAmount: '30.90',
       }],
-      checkPendingData: [],
-      rejectedData: [],
       form: {
         centralKitchenName: '',
       },
@@ -90,6 +88,15 @@ export default {
       console.log('submit!');
     },
   },
+  mounted() {
+    this.axios.get('api/cgi/m0/vendor/select?auditStatus=approved').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+
+        }
+      }
+    });
+  }
 };
 </script>
 

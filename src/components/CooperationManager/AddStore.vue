@@ -2,13 +2,8 @@
   <div>
     <div class="header">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          中央厨房管理</el-breadcrumb-item>
-        <el-breadcrumb-item>中央厨房添加</el-breadcrumb-item>
+        <BreadCrumb></BreadCrumb>
       </el-breadcrumb>
-      <p class="title">中央厨房添加</p>
     </div>
     <div class="main">
       <div class="steps">
@@ -248,8 +243,10 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 import Vue from 'vue';
 import AMap from 'vue-amap';
+import OSS from 'ali-oss';
 
 Vue.use(AMap);
 const amapManager = new AMap.AMapManager();
@@ -427,6 +424,12 @@ export default {
         },
       }],
       step_num: 1,
+      upload_options: {
+        accessKeyId: 'LTAII4cVHcL4pUfp',
+        accessKeySecret: 'j5Of6NKeaVteUnbT5znHCwTczwDnWl',
+      },
+      client: null,
+      files: [],
     };
   },
   created() {
@@ -439,9 +442,39 @@ export default {
     });
   },
   mounted() {
+    this.client = new OSS({
+      ...this.upload_options
+    });
+    console.log(this.client);
   },
   methods: {
     submitForm(formName) {
+      // this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
+      //   console.log(res);
+      // }).catch((err) => {
+      //   console.log(err);
+      // });
+      this.files.forEach((item) => {
+        console.log(item);
+        this.client
+          .multipartUpload(item.name, item, {
+            progress: (percentage, checkpoint, res) => {
+              console.log(percentage, checkpoint, res)
+            },
+            meta: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(result => {
+            console.log('result', result)
+          })
+          .catch(err => {
+            console.log('err', err)
+            console.log('err.name : ' + err.name)
+            console.log('err.message : ' + err.message)
+          });
+      });
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.step_num = 4;
@@ -502,16 +535,12 @@ export default {
     },
     handleLogoAvatarSuccess(res, file) {
       this.ruleForm.imageLogoUrl = URL.createObjectURL(file.raw);
-      this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err);
-      });
       if(file.raw.type === 'image/png'){
         this.ruleForm.imageLogoUrl_plus = '.png';
       }else if(file.raw.type === 'image/ipg'){
         this.ruleForm.imageLogoUrl_plus = '.jpg';
       }
+      this.files.push(file);
     },
     handleCardFrontAvatarSuccess(res, file) {
       this.ruleForm.imageCardFrontUrl = URL.createObjectURL(file.raw);
@@ -520,6 +549,7 @@ export default {
       }else if(file.raw.type === 'image/ipg'){
         this.ruleForm.imageCardFrontUrl_plus = '.jpg';
       }
+      this.files.push(file);
     },
     handleCardEndAvatarSuccess(res, file) {
       this.ruleForm.imageCardEndUrl = URL.createObjectURL(file.raw);
@@ -536,6 +566,7 @@ export default {
       }else if(file.raw.type === 'image/ipg'){
         this.ruleForm.businessLicenseImg_plus = '.jpg';
       }
+      this.files.push(file);
     },
     handleHygieneLicenseAvatarSuccess(res, file) {
       this.ruleForm.hygieneLicenseImg = URL.createObjectURL(file.raw);
@@ -544,6 +575,7 @@ export default {
       }else if(file.raw.type === 'image/ipg'){
         this.ruleForm.hygieneLicenseImg_plus = '.jpg';
       }
+      this.files.push(file);
     },
     beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -596,6 +628,9 @@ export default {
       this.$store.dispatch('prior', value + 1);
     },
   },
+  components: {
+    BreadCrumb,
+  }
 };
 </script>
 
@@ -607,9 +642,6 @@ export default {
     border: 1px solid #ddd;
     background-color: #fff;
     font-weight: 400;
-  }
-  .title{
-    font: normal 500 20px/56px '微软雅黑';
   }
   div.is-top{
     font-size: 18px;

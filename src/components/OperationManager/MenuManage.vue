@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          菜谱管理</el-breadcrumb-item>
-        <el-breadcrumb-item>菜谱管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">菜谱管理</p>
+      <BreadCrumb></BreadCrumb>
       <el-tabs v-model="activeName">
         <el-tab-pane label="已审核" name="first"></el-tab-pane>
         <el-tab-pane label="待审核" name="second"></el-tab-pane>
@@ -26,6 +19,147 @@
         <div class="table_container">
           <el-table
             :data="auditedData"
+            style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+            <el-table-column label="菜谱封面" width="100" :align="'center'" prop="cover">
+              <template slot-scope="scope">
+                <div style="display: flex;justify-content: center;align-items: center">
+                  <div :style="'width:60px;height:60px;background:url('+/img/+scope.row.cover+'/360) center center / cover no-repeat;'"></div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="菜谱名称" min-width="1">
+            </el-table-column>
+            <el-table-column prop="description" label="菜谱描述" min-width="1">
+            </el-table-column>
+            <el-table-column prop="vendorInfo.name" label="菜谱来源" min-width="1" :align="'center'">
+            </el-table-column>
+            <el-table-column prop="status" label="审核状态" min-width="1" :align="'center'">
+              <template slot-scope="scope" v-if="scope.row.status === 1">
+                已审核
+              </template>
+              <template slot-scope="scope" v-else>
+                未审核
+              </template>
+            </el-table-column>
+            <el-table-column prop="cookbookId" label="操作" width="250" :align="'center'">
+              <template slot-scope="scope">
+                <a :href="'http://localhost:8080/#/dashboard/operationManger/menuManage/edit/'+scope.row.cookbookId" style="color:#409eff;">编辑</a>
+                <span>|</span>
+                <a :href="'#'" style="color:#fe6a58;" @click.prevent="deleteMenu(scope.row.cookbookId)">删除</a>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="main_more" v-if="auditedData.length!=0">
+        <p>已加载全部</p>
+      </div>
+    </div>
+
+    <div class="main" v-if="activeName=='second'">
+      <div class="main_hd">
+        <router-link to="/dashboard/operationManger/menuManage/add">
+          <el-button type="primary">菜谱新增</el-button>
+        </router-link>
+      </div>
+      <div class="main_list">
+        <div class="table_container">
+          <el-table
+            :data="pendingData"
+            style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+            <el-table-column label="菜谱封面" width="100" :align="'center'" prop="cover">
+              <template slot-scope="scope">
+                <div style="display: flex;justify-content: center;align-items: center">
+                  <div :style="'width:60px;height:60px;background:url('+/img/+scope.row.cover+'/360) center center / cover no-repeat;'"></div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="菜谱名称" min-width="1">
+            </el-table-column>
+            <el-table-column prop="description" label="菜谱描述" min-width="1">
+            </el-table-column>
+            <el-table-column prop="vendorInfo.name" label="菜谱来源" min-width="1" :align="'center'">
+            </el-table-column>
+            <el-table-column prop="status" label="审核状态" min-width="1" :align="'center'">
+              <template slot-scope="scope" v-if="scope.row.status === 1">
+                已审核
+              </template>
+              <template slot-scope="scope" v-else>
+                未审核
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="250" :align="'center'">
+              <template slot-scope="scope">
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
+                <span>|</span>
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="main_more" v-if="auditedData.length!=0">
+        <p>已加载全部</p>
+      </div>
+    </div>
+
+    <div class="main" v-if="activeName=='third'">
+      <div class="main_hd">
+        <router-link to="/dashboard/operationManger/menuManage/add">
+          <el-button type="primary">菜谱新增</el-button>
+        </router-link>
+      </div>
+      <div class="main_list">
+        <div class="table_container">
+          <el-table
+            :data="rejectedData"
+            style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
+            <el-table-column label="菜谱封面" width="100" :align="'center'" prop="cover">
+              <template slot-scope="scope">
+                <div style="display: flex;justify-content: center;align-items: center">
+                  <div :style="'width:60px;height:60px;background:url('+/img/+scope.row.cover+'/360) center center / cover no-repeat;'"></div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" label="菜谱名称" min-width="1">
+            </el-table-column>
+            <el-table-column prop="description" label="菜谱描述" min-width="1">
+            </el-table-column>
+            <el-table-column prop="vendorInfo.name" label="菜谱来源" min-width="1" :align="'center'">
+            </el-table-column>
+            <el-table-column prop="status" label="审核状态" min-width="1" :align="'center'">
+              <template slot-scope="scope" v-if="scope.row.status === 1">
+                已审核
+              </template>
+              <template slot-scope="scope" v-else>
+                未审核
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="250" :align="'center'">
+              <template slot-scope="scope">
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
+                <span>|</span>
+                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="main_more" v-if="auditedData.length!=0">
+        <p>已加载全部</p>
+      </div>
+    </div>
+
+    <div class="main" v-if="activeName=='fourth'">
+      <div class="main_hd">
+        <router-link to="/dashboard/operationManger/menuManage/add">
+          <el-button type="primary">菜谱新增</el-button>
+        </router-link>
+      </div>
+      <div class="main_list">
+        <div class="table_container">
+          <el-table
+            :data="mineData"
             style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
             <el-table-column label="菜谱封面" width="100" :align="'center'" prop="cover">
               <template slot-scope="scope">
@@ -66,46 +200,67 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 export default {
   name: 'MenuManage',
   data() {
     return {
       activeName: 'first',
-      auditedData: [{
-        menuName: '海绵宝宝',
-        menuDescription: '海绵宝宝111',
-        menuSource: '平台',
-        checkState: '已通过',
-      }, {
-        menuName: '海绵宝宝',
-        menuDescription: '海绵宝宝111',
-        menuSource: '平台',
-        checkState: '已通过',
-      }, {
-        menuName: '海绵宝宝',
-        menuDescription: '海绵宝宝111',
-        menuSource: '平台',
-        checkState: '已通过',
-      }, {
-        menuName: '海绵宝宝',
-        menuDescription: '海绵宝宝111',
-        menuSource: '平台',
-        checkState: '已通过',
-      }],
+      auditedData: [],
+      pendingData: [],
+      rejectedData: [],
+      mineData: [],
     };
   },
   methods: {
     handleClick(tab, event) {},
+    deleteMenu(cookbookId) {
+      this.axios.post('api/cgi/m/cookbook/remove',{
+        "cookbookId": cookbookId
+      }).then((res) => {
+        if(res.status === 200){
+          if(res.data.code === 200){
+            let idx = this.auditedData.findIndex((item, index) => {
+              return item.cookbookId === cookbookId;
+            });
+            this.auditedData.splice(idx, 1);
+          }
+        }
+      });
+    },
   },
   mounted() {
-    this.axios.get('api/cgi/m/cookbook/select').then((res) => {
+    this.axios.get('api/cgi/m/cookbook/select?auditStatus=approved').then((res) => {
       if(res.status === 200){
         if(res.data.code === 200){
-          console.log(res.data.body.list);
           this.auditedData = res.data.body.list;
         }
       }
     });
+    this.axios.get('api/cgi/m/cookbook/select?auditStatus=auditing').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          this.pendingData = res.data.body.list;
+        }
+      }
+    });
+    this.axios.get('api/cgi/m/cookbook/select?auditStatus=rejected').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          this.rejectedData = res.data.body.list;
+        }
+      }
+    });
+    this.axios.get('api/cgi/m/cookbook/select').then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          this.mineData = res.data.body.list;
+        }
+      }
+    });
+  },
+  components: {
+    BreadCrumb,
   }
 };
 </script>
