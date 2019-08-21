@@ -16,7 +16,7 @@ import MenuAdd from '../components/OperationManager/AddMenu';
 import postManagement from '../components/systemManager/postManagement';
 import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
-import RegisterNav from '../pages/Register/register';
+import recommendManagement from '../components/systemManager/recommendManagement'
 //配置管理
 import Register from '../pages/Register/register';
 import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
@@ -225,15 +225,26 @@ export default new VueRouter({
           component: adminManagement,
           children:[
             {
+              path:'',
+              component: () => import('../components/systemManager/adminComponent/index'),
+              meta:{name:'管理员管理'}
+            },
+            {
               path:'add',
-              redirect:false,
+              component:() => import('../components/systemManager/adminComponent/adminAdd'),
+              meta:{name:'管理员添加'}
             },
             {
               path:'editor/:id',
-              redirect:false,
+              component:() => import('../components/systemManager/adminComponent/editor'),
+              meta:{name:'管理员编辑'}
             },
           ]
         },
+        {
+          path:'systemManager/recommendManagement',
+          component:recommendManagement
+        }
       ],
     },
   ],

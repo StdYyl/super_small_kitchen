@@ -9,35 +9,18 @@
       <p class="title">{{breadcrumb}}</p>
     </div>
     <div class="bd_mes">
-      <component :is="isWhich" @fun="getCon"></component>
+        <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-  import adminAdd from './adminComponent/adminAdd';
-  import editor from './adminComponent/editor';
-  import index from './adminComponent/index';
 
   export default {
     name: 'adminManagement',
-    components: {
-      adminAdd,
-      editor,
-      index
-    },
-    data() {
-      return {
-        isWhich: 'index',
-        breadcrumb: '管理员管理'
-      };
-    },
-    methods: {
-      getCon(rs) {
-        this.isWhich = rs;
-        if (rs == 'index') this.breadcrumb = '管理员管理';
-        if (rs == 'adminAdd') this.breadcrumb = '管理员添加';
-        if (rs == 'editor') this.breadcrumb = '管理员编辑';
+    data(){
+      return{
+        breadcrumb:''
       }
     },
     watch: {
@@ -45,19 +28,19 @@
         let path = this.$route.path;
         switch (path) {
           case '/dashboard/systemManager/adminManagement':
-            this.isWhich = 'index';
+            this.breadcrumb = '管理员管理';
             break;
           case "/dashboard/systemManager/adminManagement/add":
-            this.isWhich = 'adminAdd';
+            this.breadcrumb = '管理员添加';
             break;
-          case "/dashboard/systemManager/adminManagement/add" :
-            this.isWhich = 'editor'
+          default:
+            this.breadcrumb = '管理员编辑';
         }
       }
     },
-    // created() {
-    //   console.log(console.log(this.$route.path);)
-    // }
+    created() {
+      this.breadcrumb = this.$route.meta.name
+    }
   };
 </script>
 
