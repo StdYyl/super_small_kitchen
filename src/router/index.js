@@ -229,7 +229,7 @@ export default new VueRouter({
               redirect:false,
             },
             {
-              path:'editor/:a',
+              path:'editor/:id',
               redirect:false,
             },
           ]

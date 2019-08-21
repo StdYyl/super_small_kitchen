@@ -19,6 +19,7 @@
   import { mapState } from 'vuex';
   // import remoteJs from '@/basical/component/mapS';
   import LoginHeader from './../../components/LoginHeader';
+  import { checkPhone } from '@/basical/methods'
   import {
     registerNav,
     basicInformation,
@@ -77,7 +78,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             if (this.indexed.length == 5) {
-              if (!/^1[3-9][0-9]{9}$/.test(this.registerForm.mobile)) {
+              if (checkPhone(this.registerForm.mobile)) {
                 this.$message.error('手机号格式有误！');
                 return;
               }

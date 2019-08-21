@@ -9,10 +9,7 @@
       </el-form-item>
       <el-form-item prop="role" label="管理员类型">
         <el-select v-model="adminMes.role" style="width: 230px">
-          <el-option label="超级管理" value="超级管理"></el-option>
-          <el-option label="平台管理" value="平台管理"></el-option>
-          <el-option label="中央厨房管理" value="中央厨房管理"></el-option>
-          <el-option label="合作门店管理" value="合作门店管理"></el-option>
+          <el-option v-for="item in roleList" :label="item.name" :value="item.value" :key="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="position" label="管理员岗位">
@@ -21,27 +18,29 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="" label="商户选择">
-        <el-button type="primary" @click="chooseMerchants" plain>选择商户</el-button>
+        <el-button type="primary" @click="dialogTableVisible = true" plain>选择商户</el-button>
         <el-dialog title="商户选择" :visible.sync="dialogTableVisible">
-          <el-input style="width: 300px" placeholder="商户名称"></el-input>
-          <el-button type="primary" style="margin:0 0 30px 10px" >搜索</el-button>
+          <el-input v-model="searches" type="text" style="width: 300px" placeholder="商户名称"></el-input>
+          <el-button  type="primary" style="margin:0 0 30px 10px" >搜索</el-button>
           <el-table :data="merchantChoose" :header-cell-style="{background:'#f5f5f8',height:'25px'}">
             <el-table-column property="imgSrc" label="商家封面" width="270"  align="center">
               <template slot-scope="scope">
                 <img :src="scope.row.imgSrc" style="width: 80px">
               </template>
             </el-table-column>
-            <el-table-column property="name" label="商家名称" width="270"></el-table-column>
+            <el-table-column property="name" label="商家名称" width="230"></el-table-column>
             <el-table-column property="" label="操作">
-              <el-button type="text" @click="">选择</el-button>
+              <template slot-scope="scope">
+                <el-button type="text" @click="chooseHouse(scope.row)">选择</el-button>
+              </template>
             </el-table-column>
           </el-table>
           <p class="loadinged">已加载全部</p>
         </el-dialog>
       </el-form-item>
-      <el-form-item prop="" label="">
-        <img src="@/assets/tips_img.png" style="width: 80px">
-        <div style="line-height: 12px">222</div>
+      <el-form-item prop="" label="" v-if="chooseSelect.message != ''">
+        <img :src="chooseSelect.urlSrc" style="width: 80px">
+        <div style="line-height: 12px">{{chooseSelect.message}}</div>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="createdAdmin">立即更新</el-button>
@@ -52,22 +51,23 @@
 </template>
 
 <script>
-
+  import { getAdminMes } from  '@/api/admin'
   export default {
     name: 'editor',
     data() {
       return {
         adminMes: {
-          name: '1',
-          mobile: '15738258511',
-          role: '超级管理员',
+          managerId:'',
+          name: '',
+          mobile: '',
+          role: '',
           position: ''
         },
         roleList: [
           { name: '超级管理员', value: '超级管理员' },
-          { name: '平台管理', value: '平台管理' },
-          { name: '中央厨房管理', value: '中央厨房管理' },
-          { name: '合作门店管理', value: '合作门店管理' }
+          { name: '平台管理', value: 'master' },
+          { name: '中央厨房管理', value: 'vendor' },
+          { name: '合作门店管理', value: 'seller' }
         ],
         positionList: [
           { name: '总管理', value: '总管理' },
@@ -77,9 +77,10 @@
           { name: '财务管理', value: '财务管理' },
         ],
         dialogTableVisible: false,
+        searches:'',
+        chooseSelect:{urlSrc:'',message:''},
         merchantChoose: [
           { imgSrc: require('@/assets/tips_img.png') , name: 'asdss' },
-
         ],
         rule: {
           name: [{ required: true, message: '请输入管理员姓名', trigger: 'blur' }],
@@ -91,6 +92,7 @@
 
     },
     methods: {
+      //更新接口不符？ 没有密码字段获取管理员信息  没有密码
       createdAdmin() {
         this.$refs.adminMes.validate(valid=>{
           if(valid){
@@ -102,12 +104,16 @@
       cancleCreated() {
         this.$router.go(-1)
       },
-      chooseMerchants() {
-        this.dialogTableVisible = true;
+      chooseHouse(e){
+        this.chooseSelect.message = e.name
+        this.chooseSelect.urlSrc = e.imgSrc
+        this.dialogTableVisible = false
       }
     },
-    created() {
-
+    async created() {
+      let id = this.$route.params.id
+      let rs = await getAdminMes(id);
+      this.adminMes = rs.data.body
     }
   };
 </script>
