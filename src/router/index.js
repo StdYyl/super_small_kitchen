@@ -16,7 +16,7 @@ import MenuAdd from '../components/OperationManager/AddMenu';
 import postManagement from '../components/systemManager/postManagement';
 import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
-import recommendManagement from '../components/systemManager/recommendManagement'
+
 //配置管理
 import Register from '../pages/Register/register';
 import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
@@ -241,10 +241,7 @@ export default new VueRouter({
             },
           ]
         },
-        {
-          path:'systemManager/recommendManagement',
-          component:recommendManagement
-        }
+        
       ],
     },
   ],
