@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          分销佣金设置</el-breadcrumb-item>
-        <el-breadcrumb-item>分销佣金设置</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">分销佣金设置</p>
+      <breadcrumb></breadcrumb>
       <p class="content">设置佣金结算比例和分销员每次最低提现金额</p>
     </div>
     <div class="main">
@@ -55,8 +48,10 @@
 </template>
 
 <script>
+import Breadcrumb from '../currency/breadcrumb';
 export default {
-  name: 'DistributionCommissionSetting',
+  name: 'brokerage',
+  components: { Breadcrumb },
   data() {
     return {
       activeName: 'first',

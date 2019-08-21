@@ -1,25 +1,33 @@
 <template>
-    <div>
+  <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          中央厨房结算</el-breadcrumb-item>
-        <el-breadcrumb-item>中央厨房结算</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">中央厨房结算</p>
+      <breadcrumb></breadcrumb>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="未打款" name="first"></el-tab-pane>
+        <el-tab-pane label="已打款" name="second"></el-tab-pane>
+      </el-tabs>
     </div>
     <div class="main">
       <div class="main_hd">
         <el-form ref="form" :model="form" label-width="80px">
           <div class="form_container">
             <div class="form_item">
-              <span>中央厨房:</span>
-              <el-input v-model="form.centralKitchenName" style="width: 280px;"
-                        placeholder="请输入中央厨房名称"></el-input>
+              <span>打款方式:</span>
+              <el-select v-model="form.payMethod" placeholder="请选择" style="width: 300px;" value="">
+                <el-option label="全部" value="全部"></el-option>
+                <el-option label="支付宝付款" value="支付宝付款"></el-option>
+                <el-option label="微信付款" value="微信付款"></el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="form_container">
+            <div class="form_item">
+              <span>姓名或者电话:</span>
+              <el-input v-model="form.nameOrTel" style="width: 280px;"
+                        placeholder="请输入姓名或者电话"></el-input>
             </div>
             <div class="form_item">
+              <el-button>重置</el-button>
               <el-button type="primary" @click="onSubmit">查询</el-button>
             </div>
           </div>
@@ -31,23 +39,24 @@
             style="width: 100%;"
             :data="auditedData"
             :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-            <el-table-column prop="centralKitchen" label="中央厨房" min-width="1">
+            <el-table-column prop="name" label="姓名" min-width="1" :align="'center'">
             </el-table-column>
-            <el-table-column prop="orderCount" label="本月订单数" min-width="1" :align="'center'">
+            <el-table-column prop="tel" label="联系电话" min-width="2" :align="'center'">
             </el-table-column>
-            <el-table-column prop="exceptionOrderCount" label="异常订单数"
-                             min-width="1" :align="'center'">
+            <el-table-column prop="parMethod" label="打款方式" min-width="2" :align="'center'">
             </el-table-column>
-            <el-table-column prop="orderAmount" label="订单总额" min-width="1" :align="'center'">
+            <el-table-column prop="cashOutAmount" label="提现金额" min-width="2" :align="'center'">
             </el-table-column>
-            <el-table-column label="操作" min-width="1" :align="'center'">
+            <el-table-column prop="applyTime" label="申请时间" min-width="2" :align="'center'">
+            </el-table-column>
+            <el-table-column label="操作" min-width="2" :align="'center'">
               <template slot-scope="scope">
                 <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">修改</a>
                 <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">删除</a>
               </template>
             </el-table-column>
           </el-table>
-          <div class="main_more" v-if="auditedData.length!=0">
+          <div class="main_more" v-if="auditedData.length!==0">
             <p>已加载全部</p>
           </div>
         </div>
@@ -57,33 +66,43 @@
 </template>
 
 <script>
+import Breadcrumb from '../currency/breadcrumb';
 export default {
-  name: 'CentralKitchenSettlement',
+  name: 'backMoney',
+  components: { Breadcrumb },
   data() {
     return {
+      activeName: 'first',
       auditedData: [{
-        centralKitchen: '21sdawddad22454fa',
-        orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
-        orderAmount: '30.90',
+        name: '衬衣覅',
+        tel: '19713965024',
+        parMethod: '支付宝',
+        cashOutAmount: '30.90',
+        applyTime: '2017-02-08',
       }, {
-        centralKitchen: '21sdawddad22454fa',
-        orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
-        orderAmount: '30.90',
+        name: '衬衣覅',
+        tel: '19713965024',
+        parMethod: '支付宝',
+        cashOutAmount: '30.90',
+        applyTime: '2017-02-08',
       }, {
-        centralKitchen: '21sdawddad22454fa',
-        orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
-        orderAmount: '30.90',
+        name: '衬衣覅',
+        tel: '19713965024',
+        parMethod: '支付宝',
+        cashOutAmount: '30.90',
+        applyTime: '2017-02-08',
       }, {
-        centralKitchen: '21sdawddad22454fa',
-        orderCount: '2017-02-08',
-        exceptionOrderCount: 'yangyangyang',
-        orderAmount: '30.90',
+        name: '衬衣覅',
+        tel: '19713965024',
+        parMethod: '支付宝',
+        cashOutAmount: '30.90',
+        applyTime: '2017-02-08',
       }],
+      checkPendingData: [],
+      rejectedData: [],
       form: {
-        centralKitchenName: '',
+        payMethod: '',
+        nameOrTel: '',
       },
     };
   },
@@ -93,15 +112,6 @@ export default {
       console.log('submit!');
     },
   },
-  mounted() {
-    this.axios.get('api/cgi/m0/vendor/select?auditStatus=approved').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-
-        }
-      }
-    });
-  }
 };
 </script>
 
@@ -127,7 +137,6 @@ export default {
     min-width: 900px;
     font-size: 14px;
   }
-
   .form_container{
     padding: 0 0 20px 0;
     display: flex;

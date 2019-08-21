@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          分销员管理</el-breadcrumb-item>
-        <el-breadcrumb-item>分销员管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">分销员管理</p>
+      <breadcrumb></breadcrumb>
       <el-tabs v-model="activeName">
         <el-tab-pane label="分销员列表" name="first"></el-tab-pane>
         <el-tab-pane label="分销员申请" name="second"></el-tab-pane>
@@ -23,7 +16,7 @@
           <div class="form_container">
             <div class="form_item">
               <span>所有分销员:</span>
-              <el-select v-model="form.distributors" placeholder="请选择" style="width: 300px;">
+              <el-select v-model="form.distributors" placeholder="请选择" style="width: 300px;" value="">
                 <el-option label="正常" value="正常"></el-option>
                 <el-option label="暂停" value="暂停"></el-option>
               </el-select>
@@ -67,7 +60,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="main_more" v-if="auditedData.length!=0">
+          <div class="main_more" v-if="auditedData.length!==0">
             <p>已加载全部</p>
           </div>
         </div>
@@ -114,7 +107,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="main_more" v-if="auditedData.length!=0">
+          <div class="main_more" v-if="auditedData.length!==0">
             <p>已加载全部</p>
           </div>
         </div>
@@ -124,8 +117,10 @@
 </template>
 
 <script>
+import Breadcrumb from '../currency/breadcrumb';
 export default {
-  name: 'DistributorManage',
+  name: 'salesperson',
+  components: { Breadcrumb },
   data() {
     return {
       activeName: 'first',

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <breadcrumb></breadcrumb>
+    <div class="header">
+      <breadcrumb></breadcrumb>
+    </div>
     <div class="categoryTable">
       <el-button @click="add" style="float: right" type="primary">分类添加</el-button>
       <div style="clear: both;"></div>

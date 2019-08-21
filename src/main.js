@@ -11,11 +11,14 @@ import router from './router';
 import './icons/index';
 // 状态管理
 import store from './store/index';
+//cookie,检测登录过期
+import cookie from 'vue-cookie'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.prototype.axios = Axios;
 Vue.use(AMap);
+Vue.use(cookie);
 
 AMap.initAMapApiLoader({
   // 高德的key

@@ -18,7 +18,7 @@ import MenuEdit from '../components/OperationManager/EditMenu';
 import postManagement from '../components/systemManager/postManagement';
 import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
-import RegisterNav from '../pages/Register/register';
+
 //配置管理
 import Register from '../pages/Register/register';
 import CookCategoryIndex from '../components/configManage/cookCategoryIndex';
@@ -32,11 +32,14 @@ import GoodsCategoryAdd from '../components/configManage/goodsCategoryAdd';
 import GoodsCategoryEdit from '../components/configManage/goodsCategoryEdit';
 import GoodsCategoryChild from '../components/configManage/goodsCategoryChild';
 import Directive from '../components/configManage/Directive';
-//配置管理/
-import CentralKitchenSettlement from '../components/FinancialSettlement/CentralKitchenSettlement';
-import CashOutManage from '../components/FinancialSettlement/CashOutManage';
-import DistributorManage from '../components/FinancialSettlement/DistributorManage';
-import DistributionCommissionSetting from '../components/FinancialSettlement/DistributionCommissionSetting';
+//配置管理//
+//财务结算
+import VendorAccount from '../components/accountManage/vendorAccount';
+import BackMoney from '../components/accountManage/backMoney';
+import Salesperson from '../components/accountManage/salesperson';
+import Brokerage from '../components/accountManage/brokerage';
+//财务结算//
+
 
 Vue.use(VueRouter);
 
@@ -277,29 +280,30 @@ export default new VueRouter({
           meta: { title: '指令管理' },
           component: Directive,
         },
+        //财务结算
         {
-          path: 'financialSettlement/centralKitchenSettlement',
-          name: 'centralKitchenSettlement',
+          path: 'accountManage/vendorAccount',
+          name: 'vendorAccount',
           meta: { title: '中央厨房结算' },
-          component: CentralKitchenSettlement,
+          component: VendorAccount,
         },
         {
-          path: 'financialSettlement/cashOutManage',
-          name: 'cashOutManage',
+          path: 'accountManage/backMoney',
+          name: 'backMoney',
           meta: { title: '提现管理' },
-          component: CashOutManage,
+          component: BackMoney,
         },
         {
-          path: 'financialSettlement/distributorManage',
-          name: 'distributorManage',
+          path: 'accountManage/salesperson',
+          name: 'salesperson',
           meta: { title: '分销员管理' },
-          component: DistributorManage,
+          component: Salesperson,
         },
         {
-          path: 'financialSettlement/distributionCommissionSetting',
-          name: 'distributionCommissionSetting',
-          meta: { title: '分销员管理' },
-          component: DistributionCommissionSetting,
+          path: 'accountManage/brokerage',
+          name: 'brokerage',
+          meta: { title: '分销员佣金设置' },
+          component: Brokerage,
         },
         {
           path:'systemManager/postManagement',
@@ -310,15 +314,23 @@ export default new VueRouter({
           component: adminManagement,
           children:[
             {
-              path:'add',
-              redirect:false,
+              path:'',
+              component: () => import('../components/systemManager/adminComponent/index'),
+              meta:{name:'管理员管理'}
             },
             {
-              path:'editor/:a',
-              redirect:false,
+              path:'add',
+              component:() => import('../components/systemManager/adminComponent/adminAdd'),
+              meta:{name:'管理员添加'}
+            },
+            {
+              path:'editor/:id',
+              component:() => import('../components/systemManager/adminComponent/editor'),
+              meta:{name:'管理员编辑'}
             },
           ]
         },
+        
       ],
     },
   ],

@@ -23,6 +23,13 @@ export default {
     NavBar,
     SliderBar,
   },
+  watch:{
+    $route(){
+      if (!this.$cookie.get('passport')) {
+        this.$router.push({path:'/login'})
+      }
+    }
+  }
 };
 </script>
 

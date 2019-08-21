@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export function requested(url,method='get',data){
-  return axios({ method, url, data, timeout: 6000 });
+export function requested(url,method='get',data,config){
+  return axios({ method, url, data, config, timeout: 6000 });
 }
 
 axios.interceptors.response.use((res) => {
