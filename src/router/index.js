@@ -241,7 +241,28 @@ export default new VueRouter({
             },
           ]
         },
-        
+        {
+          path:'systemManager/directiveSet',
+          meta:{title:'指令集管理'},
+          component: () => import('../components/systemManager/directiveSet/directiveSetIndex'),
+          children:[
+            {
+              path:'',
+              component: () => import('../components/systemManager/directiveSet/directiveSet'),
+              meta:{title:'指令集管理'}
+            },
+            {
+              path:'add',
+              component:() => import('../components/systemManager/directiveSet/directiveSetAdd'),
+              meta:{title:'指令集添加'}
+            },
+            {
+              path:'edit/:id',
+              component:() => import('../components/systemManager/directiveSet/directiveSetEdit'),
+              meta:{title:'指令集编辑'}
+            },
+          ]
+        },
       ],
     },
   ],

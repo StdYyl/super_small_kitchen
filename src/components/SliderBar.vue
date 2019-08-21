@@ -101,7 +101,7 @@
           <router-link to="/dashboard/systemManager/recommendManagement">推荐位管理</router-link>
         </dd>
         <dd>通知管理</dd>
-        <dd>指令集管理</dd>
+        <dd><router-link to="/dashboard/systemManager/directiveSet">指令集管理</router-link></dd>
       </dl>
     </div>
   </div>
