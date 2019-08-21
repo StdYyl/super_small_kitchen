@@ -126,7 +126,7 @@
       categoryAdd:function (id) {
         this.$router.push({
           path : 'cookCategory/add/' + id
-        });;
+        })
       },
       editNow:function (scope) {
         let form = scope.row;
