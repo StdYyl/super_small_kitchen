@@ -1,14 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          中央厨房管理</el-breadcrumb-item>
-        <el-breadcrumb-item>中央厨房添加</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">中央厨房添加</p>
+      <BreadCrumb></BreadCrumb>
     </div>
     <div class="main">
       <div class="step_first">
@@ -183,6 +176,7 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 import Vue from 'vue';
 import AMap from 'vue-amap';
 
@@ -502,6 +496,9 @@ export default {
           this.center = [this.lng, this.lat];
         });
     },
+  },
+  components: {
+    BreadCrumb,
   },
 }
 </script>

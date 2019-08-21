@@ -1,14 +1,7 @@
 <template>
     <div>
       <div class="header">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-            首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-            订单管理</el-breadcrumb-item>
-          <el-breadcrumb-item>订单管理</el-breadcrumb-item>
-        </el-breadcrumb>
-        <p class="title">订单管理</p>
+        <BreadCrumb></BreadCrumb>
       </div>
       <div class="main">
         <div class="main_hd">
@@ -98,6 +91,7 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 export default {
   name: 'OrderManage',
   data() {
@@ -127,6 +121,9 @@ export default {
         }
       }
     });
+  },
+  components: {
+    BreadCrumb,
   }
 };
 </script>

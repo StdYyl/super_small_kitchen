@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Login from './../pages/Login/Login';
 import DashBoard from './../pages/DasgBoard/DashBoard';
 import MainPage from './../components/MainPage';
+import SecondLevelRV from '../components/SecondLevelRV';
 import CentralKitchenManage from '../components/CooperationManager/CentralKitchenManage';
 import OperationStoreManage from '../components/CooperationManager/OperationStoreManage';
 import StoreAdd from '../components/CooperationManager/AddStore';
@@ -13,6 +14,7 @@ import CommodityStoreManage from '../components/OperationManager/CommodityStoreM
 import MenuManage from '../components/OperationManager/MenuManage';
 import GoodsAdd from '../components/OperationManager/AddGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
+import MenuEdit from '../components/OperationManager/EditMenu';
 import postManagement from '../components/systemManager/postManagement';
 import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
@@ -55,67 +57,154 @@ export default new VueRouter({
     {
       path: '/dashboard',
       component: DashBoard,
+      name: 'dashboard',
       meta:{title:'首页'},
       children: [
         {
           path: '',
           component: MainPage,
+          name: 'main_page',
+          meta:{title:'首页'},
         },
         {
           path: 'cooperationManger/centralKitchenManage',
           name: 'centralKitchenManage',
           meta: { title: '中央厨房管理' },
-          component: CentralKitchenManage,
-        },
-        {
-          path: 'cooperationManger/centralKitchenManage/add',
-          name: 'StoreAdd',
-          meta: { title: '中央厨房添加' },
-          component: StoreAdd,
-        },
-        {
-          path: 'cooperationManger/centralKitchenManage/edit/:vendorId',
-          name: 'StoreEdit',
-          meta: { title: '中央厨房编辑' },
-          component: StoreEdit,
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'centralKitchenList',
+              meta: { title: '中央厨房列表' },
+              component: CentralKitchenManage,
+            },
+            {
+              path: 'add',
+              name: 'StoreAdd',
+              meta: { title: '中央厨房添加' },
+              component: StoreAdd,
+            },
+            {
+              path: 'edit/:vendorId',
+              name: 'StoreEdit',
+              meta: { title: '中央厨房编辑' },
+              component: StoreEdit,
+            },
+          ],
         },
         {
           path: 'cooperationManger/cooperationStoreManage',
           name: 'cooperationStoreManage',
           meta: { title: '合作门店管理' },
-          component: OperationStoreManage,
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'cooperationStoreList',
+              meta: { title: '合作门店列表' },
+              component: OperationStoreManage,
+            },
+            {
+              path: 'add',
+              name: 'StoreAdd',
+              meta: { title: '合作门店添加' },
+              component: StoreAdd,
+            },
+            {
+              path: 'edit/:vendorId',
+              name: 'StoreEdit',
+              meta: { title: '合作门店编辑' },
+              component: StoreEdit,
+            },
+          ],
         },
         {
           path: 'operationManger/orderManage',
           name: 'centralKitchenManage',
           meta: { title: '订单管理' },
-          component: OrderManage,
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'centralKitchenManage',
+              meta: { title: '订单管理' },
+              component: OrderManage,
+            }
+          ]
         },
         {
           path: 'operationManger/memberManage',
-          component: MemberManage,
+          name: 'memberManage',
+          meta: { title: '会员管理' },
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'memberManage',
+              meta: { title: '会员管理' },
+              component: MemberManage,
+            }
+          ]
         },
         {
           path: 'operationManger/commodityStoreManage',
-          component: CommodityStoreManage,
-        },
-        {
-          path: 'operationManger/commodityStoreManage/add',
-          component: GoodsAdd,
+          name: 'commodityStoreManage',
+          meta: { title: '商品库管理' },
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'commodityStoreManage',
+              meta: { title: '商品库管理' },
+              component: CommodityStoreManage,
+            },
+            {
+              path: 'add',
+              name: 'CommodityStoreAdd',
+              meta: { title: '商品库添加' },
+              component: GoodsAdd,
+            },
+          ]
         },
         {
           path: 'operationManger/menuManage',
-          component: MenuManage,
-        },
-        {
-          path: 'operationManger/menuManage/add',
-          component: MenuAdd,
+          name: 'menuManage',
+          meta: { title: '菜谱管理' },
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'menuManage',
+              meta: { title: '菜谱管理' },
+              component: MenuManage,
+            },
+            {
+              path: 'add',
+              name: 'MenuAdd',
+              meta: { title: '菜谱添加' },
+              component: MenuAdd,
+            },
+            {
+              path: 'edit/:cookbookId',
+              name: 'MenuEdit',
+              meta: { title: '菜谱编辑' },
+              component: MenuEdit,
+            },
+          ]
         },
         {
           path: 'operationManger/qrcodeManage',
           name: 'qrcodeManage',
           meta: { title: '二维码管理' },
-          component: QRCodeManage,
+          component: SecondLevelRV,
+          children: [
+            {
+              path: '',
+              name: 'qrcodeManage',
+              meta: { title: '二维码管理' },
+              component: QRCodeManage,
+            }
+          ]
         },
         //配置管理/菜谱分类
         {

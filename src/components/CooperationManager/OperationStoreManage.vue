@@ -1,14 +1,7 @@
 <template>
     <div>
     <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/dashboard/main_page' }">
-          首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/dashboard/cooperationManger/centralKitchenManage' }">
-          合作门店管理</el-breadcrumb-item>
-        <el-breadcrumb-item>合作门店列表</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">合作门店列表</p>
+      <BreadCrumb></BreadCrumb>
       <el-tabs v-model="activeName">
         <el-tab-pane label="已审核" name="first"></el-tab-pane>
         <el-tab-pane label="待审核" name="second"></el-tab-pane>
@@ -123,6 +116,7 @@
 </template>
 
 <script>
+import BreadCrumb from '../BreadCrumb';
 export default {
   name: 'OperationStoreManage',
   data() {
@@ -159,6 +153,9 @@ export default {
         }
       }
     });
+  },
+  components: {
+    BreadCrumb,
   }
 };
 </script>
@@ -171,9 +168,6 @@ export default {
     border: 1px solid #ddd;
     background-color: #fff;
     font-weight: 400;
-  }
-  .title{
-    font: normal 500 20px/56px '微软雅黑';
   }
   .main{
     padding: 10px 20px 250px 20px;

@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <div class="header">
       <BreadCrumb></BreadCrumb>
     </div>
@@ -42,7 +42,7 @@
                     :show-file-list="false"
                     :on-success="handleMenuImgAvatarSuccess"
                     :before-upload="beforeAvatarUpload">
-                    <img v-if="ruleForm.menuImgUrl" :src="ruleForm.menuImgUrl" class="avatar">
+                    <div v-if="ruleForm.menuImgUrl" :style="'background:url('+/img/+ruleForm.menuImgUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传一张最佳的效果图，有助于提高购买率</div>
                   </el-upload>
@@ -58,7 +58,7 @@
                     :show-file-list="false"
                     :on-success="handleMenuShowAvatarSuccess"
                     :before-upload="beforeAvatarUpload">
-                    <img v-if="ruleForm.menuShowImgUrl" :src="ruleForm.menuShowImgUrl" class="avatar avatar_small">
+                    <div v-if="ruleForm.menuShowImgUrl" :style="'background:url('+/img/+ruleForm.menuShowImgUrl+'/360) center center / cover no-repeat;'" class="avatar avatar_small"></div>
                     <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small"></i>
                     <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -151,8 +151,7 @@
                           :show-file-list="false"
                           :on-success="handleMenuStepAvatarSuccess"
                           :before-upload="beforeAvatarUpload">
-                          <img v-if="scope.row.stepImg"
-                               :src="scope.row.stepImg" class="avatar avatar_small">
+                          <div v-if="scope.row.stepImg" :style="'background:url('+/img/+scope.row.stepImg+'/360) center center / cover no-repeat;'" class="avatar avatar_small"></div>
                           <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small" @click="findImgIdx(scope.row)"></i>
                         </el-upload>
@@ -270,9 +269,10 @@
 <script>
 import BreadCrumb from '../BreadCrumb';
 export default {
-  name: 'AddMenu',
+  name: "EditMenu",
   data() {
     return {
+      cookbook: null,
       ruleForm: {
         menuName: '',
         menuSort: '',
@@ -282,23 +282,10 @@ export default {
         difficulty: '',
         useTime: '',
         menuDescription: '',
-        materialData: [
-          {
-            id: new Date().getTime(),
-            materialName: '',
-            materialAmount: '',
-          },
-        ],
+        materialData: [],
         tempMenuStep: null,
         menuStepIdx: 0,
-        menuStep: [
-          {
-            id: new Date().getTime(),
-            stepImg: '',
-            stepDetail: '',
-            tagName: '绑定指令集',
-          },
-        ],
+        menuStep: [],
       },
       tagsSelect: {
         searchName: '',
@@ -473,10 +460,44 @@ export default {
       this.ruleForm.tempMenuStep = step;
     },
   },
+  mounted() {
+    console.log(this.$route.params.cookbookId);
+    let cookbookId = this.$route.params.cookbookId;
+    this.axios.get('api/cgi/m/cookbook/detail?cookbookId='+cookbookId).then((res) => {
+      if(res.status === 200){
+        if(res.data.code === 200){
+          this.cookbook = res.data.body;
+          this.ruleForm.menuName = this.cookbook.name;
+          this.ruleForm.menuSort = this.cookbook.sort;
+          this.ruleForm.menuImgUrl = this.cookbook.cover;
+          this.ruleForm.menuShowImgUrl = this.cookbook.images[0];
+          this.cookbook.materials.forEach((item) => {
+            this.ruleForm.materialData.push({
+              id: new Date().getTime(),
+              materialName: item.name,
+              materialAmount: item.info,
+            },);
+          });
+          this.ruleForm.flavorName = this.cookbook.features[0].info;
+          this.ruleForm.difficulty = this.cookbook.features[1].info;
+          this.ruleForm.useTime = this.cookbook.features[2].info;
+          this.cookbook.steps.forEach((item) => {
+            this.ruleForm.menuStep.push({
+              id: new Date().getTime(),
+              stepImg: item.cover,
+              stepDetail: item.detail,
+              tagName: '指令集:'+item.directiveSetInfo.name,
+            });
+          });
+          this.ruleForm.menuDescription = this.cookbook.description;
+        }
+      }
+    });
+  },
   components: {
     BreadCrumb,
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -548,11 +569,6 @@ export default {
     }
   }
   /*上传图片模块*/
-  .picture-card /deep/{
-    display: block;
-    width: 90px !important;
-    height: 90px !important;
-  }
   .avatar-uploader i{
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
