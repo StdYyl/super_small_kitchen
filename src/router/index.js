@@ -352,6 +352,28 @@ export default new VueRouter({
             },
           ]
         },
+        {
+          path:'systemManager/notification',
+          meta:{title:'通知管理'},
+          component: () => import('../components/systemManager/notification/notificationIndex'),
+          children:[
+            {
+              path:'',
+              component: () => import('../components/systemManager/notification/notification'),
+              meta:{title:'通知管理'}
+            },
+            {
+              path:'add',
+              component:() => import('../components/systemManager/notification/notificationAdd'),
+              meta:{title:'通知新增'}
+            },
+            {
+              path:'edit/:id',
+              component:() => import('../components/systemManager/notification/notificationEdit'),
+              meta:{title:'通知更新'}
+            },
+          ]
+        }
       ],
     },
   ],
