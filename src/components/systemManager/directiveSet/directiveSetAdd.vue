@@ -4,18 +4,17 @@
       <breadcrumb></breadcrumb>
     </div>
     <div class="directiveSetTable">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="tableData" :rules="rules" ref="tableData" label-width="100px" class="demo-ruleForm">
         <el-form-item label-width="0" prop="name">
-          <el-input class="titleName" placeholder="指令集名称" v-model="name"></el-input>
+          <el-input class="titleName" placeholder="指令集名称" v-model="tableData.name"></el-input>
         </el-form-item>
         <el-table
           :header-cell-style="{background: '#f5f5f8'}"
-          :data="tableData"
+          :data="tableData.content"
           highlight-current-row
           style="width: 100%;margin-top: 20px;">
           <el-table-column
             type="index"
-            property="name"
             label="指令步骤"
             align="center">
           </el-table-column>
@@ -25,12 +24,12 @@
             align="center">
             <template slot-scope="scope">
               <el-form-item label-width="0">
-                <el-select v-model="ruleForm.region" placeholder="请选择" value="ruleForm.region">
+                <el-select v-model="scope.row.directiveId" placeholder="请选择" value="scope.row.directiveId">
                   <el-option
-                    v-for="goodsCategoryItem in goodsCategoryList"
-                    :key="goodsCategoryItem.categoryId"
-                    :label="goodsCategoryItem.name"
-                    :value="goodsCategoryItem.categoryId"></el-option>
+                    v-for="directiveItem in directiveList"
+                    :key="directiveItem.directiveId"
+                    :label="directiveItem.name"
+                    :value="directiveItem.directiveId"></el-option>
                 </el-select>
               </el-form-item>
             </template>
@@ -115,11 +114,11 @@
           </el-table-column>
         </el-table>
         <div style="text-align: center;padding-top: 20px">
-          <a @click="" href="javascript:0;" style="color: #1890ff">增加一行</a>
-          <a @click="" href="javascript:0;" style="margin-left: 20px;color: #f56c6c">删除一行</a>
+          <a @click="addLine" href="javascript:0;" style="color: #1890ff">增加一行</a>
+          <a @click="delLine" href="javascript:0;" style="margin-left: 20px;color: #f56c6c">删除一行</a>
         </div>
         <el-form-item label-width="0">
-          <el-button type="primary" @click="submitForm('ruleForm')">立即添加</el-button>
+          <el-button type="primary" @click="submitForm('tableData')">立即添加</el-button>
           <el-button @click="resetForm">取消</el-button>
         </el-form-item>
       </el-form>
@@ -128,7 +127,8 @@
 </template>
 
 <script>
-  import { getGoodsCategory, getGoodsCategoryList, addGoodsCategory } from '@/api/goodsCategory';
+  import { addDirectiveSet } from '@/api/directiveSet';
+  import { getDirectiveList} from '@/api/directive';
   import breadcrumb from '@/components/currency/breadcrumb';
 
   export default {
@@ -136,33 +136,23 @@
     components: { breadcrumb },
     data() {
       return {
-        name:'',
-        goodsCategoryList: [],
-        tableData: [
-          {
-            capacity: 13,
-            directiveId: 'RKX4UOQVD3EL2VW',
-            power: 14,
-            remark1: '16',
-            remark2: '',
-            position: '15',
-            step: 1,
-            temperature: 11,
-            time: 12
-          }
-        ],
-        ruleForm: {
-          categoryId: '',
-          parentId: '',
-          region: '',
-          name: '',
-          sort: '',
-          cover: '',
-          tags: {
-            hot: false,
-            search: false
-          },
-          description: '',
+        directiveList: [],
+        tableData: {
+          content: [
+            {
+              capacity: "",
+              directiveId: "",
+              power: "",
+              remark1: "",
+              remark2: "",
+              step: 1,
+              temperature: "",
+              time: ""
+            },
+          ],
+          name: "",
+          sort: 1,
+          status: 1,
         },
         rules: {
           name: [
@@ -174,34 +164,37 @@
     },
     methods: {
       submitForm(formName) {
-        this.ruleForm.parentId = this.ruleForm.region;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            //接收到的分类信息中tags是json对象"tags":{"hot":true,"search":false}，而修改时接口期望数组"tags": ["hot"]
-            //在此进行转化
-            /*var tag = [];
-            for (var item in this.ruleForm.tags)
-              if (`this.ruleForm.tags.${item}`)
-                tag.push(item);
-            this.ruleForm.tags = tag;*/
-            //over
-            addGoodsCategory(this.ruleForm)
-              .then(value => {
-                if (value.code === 200) {
-                  this.$router.back(-1);
-                  this.$message({
-                    type: 'success',
-                    message: '添加成功'
-                  });
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: value.desc
-                  });
-                }
+            var isDo = true;
+            for (var i = 0; i < this.tableData.content.length; i++) {
+              if (this.tableData.content[i].directiveId==='') {
+                isDo = false;
+                break;
+              }
+            }
+            if (isDo) {
+              addDirectiveSet(this.tableData)
+                .then(value => {
+                  if (value.code === 200) {
+                    this.$router.back(-1);
+                    this.$message({
+                      type: 'success',
+                      message: '添加成功'
+                    });
+                  } else {
+                    this.$message({
+                      type: 'error',
+                      message: value.desc
+                    });
+                  }
+                });
+            }else {
+              this.$message({
+                type: 'error',
+                message: '请选择指令名称'
               });
-            //console.log(this.ruleForm);
-            //console.log(editGoodsCategory(this.ruleForm));
+            }
           } else {
             console.log('error submit!!');
             return false;
@@ -211,8 +204,25 @@
       resetForm() {
         this.$router.back(-1);
       },
+      addLine:function(){
+        this.tableData.content.push(
+          {
+            capacity: "",
+            directiveId: "",
+            power: "",
+            remark1: "",
+            remark2: "",
+            step: 1,
+            temperature: "",
+            time: ""
+          }
+        )
+      },
+      delLine:function(){
+        this.tableData.content.pop();
+      },
       init: function () {
-        getGoodsCategory(this.$route.params.id)
+        /*getDirective(this.$route.params.id)
           .then(val => {
             //登录实现后，将该语句改为
             //this.ruleForm.parentId = val.parentId;
@@ -220,10 +230,10 @@
               this.ruleForm.region = val.categoryId;
             }
             //this.ruleForm = {"code":200,"body":{"categoryId":"RQP8HV8GDLL5Z96","parentId":"","name":"营养早餐","cover":"d0/goodsCategory/190219/y630codxqplokk61.jpg","description":"营养早餐，真的棒666","tags":{"hot":true,"search":false},"sort":1,"status":1},"time":1565943605947}.body;
-          });
-        getGoodsCategoryList()
+          });*/
+        getDirectiveList()
           .then(val => {
-            this.goodsCategoryList = val;
+            this.directiveList = val;
           });
       }
     },

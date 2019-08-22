@@ -103,7 +103,7 @@ export default {
     LoginHeader,
   },
   mounted() {
-    if (this.$cookie.get('passport')) {
+    if (this.$store.getters.getStorage) {
       this.$router.push('/dashboard');
     }
   },
