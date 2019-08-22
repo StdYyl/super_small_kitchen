@@ -5,7 +5,7 @@
     </div>
     <div class="directiveSetTable">
       <div style="float: left;line-height: 40px">指令集名称：</div>
-      <el-input v-model="search" placeholder="请输入指令集名称" style="float: left;width: 300px;line-height: 40px"></el-input>
+      <el-input v-model="getMoreForm.search" placeholder="请输入指令集名称" style="float: left;width: 300px;line-height: 40px"></el-input>
       <el-button @click="" style="float: left;margin-left: 20px;" type="primary">查询</el-button>
       <el-button @click="directiveSetAdd()" style="float: right" type="primary">添加指令</el-button>
       <div style="clear: both;"></div>
@@ -32,7 +32,8 @@
         </el-table-column>
       </el-table>
       <div class="main_more" v-if="tableData.length!==0">
-        <a href="javascript:0;">已加载全部</a>
+        <a v-if="getMoreForm.more" @click="getMore" style="color: #1890ff" href="javascript:0;">加载更多</a>
+        <a v-else href="javascript:0;">已加载全部</a>
       </div>
     </div>
   </div>
@@ -46,7 +47,12 @@
     components:{breadcrumb},
     data() {
       return {
-        search:'',
+        getMoreForm:{
+          search:'',
+          last: '',
+          more: false,
+          rows: 10
+        },
         tableData: []
       }
     },
@@ -85,9 +91,20 @@
           path : 'directiveSet/add'
         })
       },
+      getMore:function () {
+        getDirectiveSetList(this.getMoreForm).then(val => {
+          this.tableData = this.tableData.concat(val.list);
+          this.getMoreForm.last = val.page.last;
+          this.getMoreForm.more = val.page.more;
+        });
+      },
       init:function () {
-        getDirectiveSetList().then(val => {
+        this.getMoreForm.last = 0;
+        this.getMoreForm.rows = 10;
+        getDirectiveSetList(this.getMoreForm).then(val => {
           this.tableData = val.list;
+          this.getMoreForm.last = val.page.last;
+          this.getMoreForm.more = val.page.more;
         });
       }
     },

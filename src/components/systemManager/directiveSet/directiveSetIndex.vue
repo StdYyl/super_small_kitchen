@@ -41,7 +41,7 @@
     /*控制表格外框和白背景*/
     .directiveSetTable {
       padding: 23px 30px;
-      margin-top: 30px;
+      margin: 30px 0;
       min-height: 800px;
       border: 1px solid #ddd;
       background: white;

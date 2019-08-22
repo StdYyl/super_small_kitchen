@@ -1,7 +1,10 @@
 import { requested } from './axiosed';
 // 管理员获取指令集列表
-export async function getDirectiveSetList() {
+export async function getDirectiveSetList(form) {
   var url = 'api/cgi/m/directiveSet/select';
+  if (form) {
+    url+='?search='+form.search+'&last='+form.last+'&rows='+form.rows;
+  }
   let res = await requested(url);
   return res.data.body;
 }
