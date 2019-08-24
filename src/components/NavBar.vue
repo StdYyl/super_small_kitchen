@@ -15,9 +15,11 @@
               <el-dropdown-item>
                 <router-link to="/dashboard/main_page" tag="span">首页</router-link>
               </el-dropdown-item>
-              <el-dropdown-item>
-                <span @click="loginOut">退出登录</span>
-              </el-dropdown-item>
+              <a href="#" @click.prevent="loginOut">
+                <el-dropdown-item>
+                  <span>退出登录</span>
+                </el-dropdown-item>
+              </a>
             </el-dropdown-menu>
           </el-dropdown>
         </div>

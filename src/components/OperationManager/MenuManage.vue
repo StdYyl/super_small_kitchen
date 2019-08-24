@@ -90,9 +90,9 @@
             </el-table-column>
             <el-table-column label="操作" width="250" :align="'center'">
               <template slot-scope="scope">
-                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
+                <a :href="'http://localhost:8080/#/dashboard/operationManger/menuManage/edit/'+scope.row.cookbookId" style="color:#409eff;">编辑</a>
                 <span>|</span>
-                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
+                <a :href="'#'" style="color:#fe6a58;" @click.prevent="deleteMenu(scope.row.cookbookId)">删除</a>
               </template>
             </el-table-column>
           </el-table>

@@ -64,6 +64,7 @@
                   :before-upload="beforeAvatarUpload"
                   :data="uploadFile.data">
                   <div v-if="ruleForm.goodsShowImgUrl" :style="'background:url('+/img/+ruleForm.goodsShowImgUrl+'/360) center center / cover no-repeat;'" class="avatar avatar_small"></div>
+                  <!--                  <img v-if="ruleForm.goodsShowImgUrl" :src="ruleForm.goodsShowImgUrl" class="avatar avatar_small">-->
                   <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small"></i>
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -126,7 +127,7 @@
           </div>
           <div class="form_container">
             <div class="form_item">
-              <el-button type="primary" @click="goodsAdd('ruleForm')">添加</el-button>
+              <el-button type="primary" @click="goodsEdit('ruleForm')">更新</el-button>
               <router-link to="/dashboard/operationManger/commodityStoreManage">
                 <el-button>取消</el-button>
               </router-link>
@@ -207,7 +208,7 @@
 <script>
 import BreadCrumb from '../BreadCrumb';
 export default {
-  name: 'AddGoods',
+  name: "EditGoods",
   data() {
     return {
       ruleForm: {
@@ -258,8 +259,8 @@ export default {
       ],
       goodsOptions: [
         {
-          value: '平顶锅',
-          label: '平顶锅',
+          value: '平底锅',
+          label: '平底锅',
           children: [{
             value: '小号锅1',
             label: '小号锅1',
@@ -293,14 +294,13 @@ export default {
     };
   },
   methods: {
-    goodsAdd(formName) {
+    goodsEdit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let goodsIdList = [];
           this.ruleForm.selectedGoods.forEach((item) => {
             goodsIdList.push(item.goodsId);
           });
-          console.log(this.ruleForm.goodsSort);
           let promise = new Promise((resolve, reject) => {
             this.axios.get('api/cgi/m/category/select').then((res) => {
               if(res.status === 200) {
@@ -314,10 +314,12 @@ export default {
               }
             }).catch((err) => {
               console.log(err);
+              reject(err);
             });
           });
           promise.then((categoryId) => {
-            this.axios.post('api/cgi/m1/wares/create',{
+            this.axios.post('api/cgi/m1/wares/revise',{
+              "waresId": this.$route.params.waresId,
               "categoryId": categoryId,
               "cookbookId": this.ruleForm.selectedMenu.cookbookId,
               "name": this.ruleForm.goodsName,
@@ -333,18 +335,19 @@ export default {
               "relativeGoodIds": goodsIdList,
               "status": 1
             }).then((res) => {
+              console.log(res);
               if(res.status === 200) {
                 if(res.data.code === 200) {
                   this.$router.push('/dashboard/operationManger/commodityStoreManage');
                   this.$message({
-                    message: '添加成功',
+                    message: '修改成功',
                     type: 'success'
                   });
                 }
               }
             }).catch((err) => {
               console.log(err);
-              this.$message.error('添加失败');
+              this.$message.error('修改失败');
             });
           });
         } else {
@@ -492,12 +495,38 @@ export default {
     },
   },
   mounted() {
-
+    this.axios.get('api/cgi/m/wares/detail?waresId='+this.$route.params.waresId).then((res) => {
+      if(res.status === 200) {
+        if(res.data.code === 200) {
+          console.log(res.data.body);
+          let goodsOption = this.goodsOptions.find((item) => {
+            return item.value === res.data.body.categoryInfo.name;
+          });
+          this.ruleForm.goodsName = res.data.body.name;
+          this.ruleForm.goodsSort = [goodsOption.value, goodsOption.children[0].value];
+          this.ruleForm.visibleRange = res.data.body.visible;
+          this.ruleForm.goodsImgUrl = res.data.body.cover;
+          this.ruleForm.goodsShowImgUrl = res.data.body.images[0];
+          this.ruleForm.goodsDetailImgUrl = res.data.body.detail[0];
+          this.ruleForm.goodsDescription = res.data.body.description;
+          this.ruleForm.selectedMenu = res.data.body.cookbookInfo;
+          if(this.ruleForm.selectedMenu) {
+            this.ruleForm.isSelectedMenu = true;
+          }
+          this.ruleForm.selectedGoods = res.data.body.relativeGoodInfos;
+          if(this.ruleForm.selectedGoods) {
+            this.ruleForm.isSelectedGoods = true;
+          }
+        }
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
   },
   components: {
     BreadCrumb,
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -582,4 +611,3 @@ export default {
     margin-left: 10px;
   }
 </style>
-

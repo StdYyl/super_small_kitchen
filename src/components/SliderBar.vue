@@ -113,6 +113,17 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+
+  },
+  watch: {
+    $route() {
+      console.log('change');
+      if (!this.$cookie.get('passport')) {
+        this.$router.push('/login');
+      }
+    }
+  }
 };
 </script>
 

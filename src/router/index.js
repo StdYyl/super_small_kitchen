@@ -13,6 +13,7 @@ import MemberManage from '../components/OperationManager/MemberManage';
 import CommodityStoreManage from '../components/OperationManager/CommodityStoreManage';
 import MenuManage from '../components/OperationManager/MenuManage';
 import GoodsAdd from '../components/OperationManager/AddGoods';
+import GoodsEdit from '../components/OperationManager/EditGoods';
 import MenuAdd from '../components/OperationManager/AddMenu';
 import MenuEdit from '../components/OperationManager/EditMenu';
 import postManagement from '../components/systemManager/postManagement';
@@ -166,6 +167,12 @@ export default new VueRouter({
               name: 'CommodityStoreAdd',
               meta: { title: '商品库添加' },
               component: GoodsAdd,
+            },
+            {
+              path: 'edit/:waresId',
+              name: 'CommodityStoreEdit',
+              meta: { title: '商品库编辑' },
+              component: GoodsEdit,
             },
           ]
         },
@@ -330,7 +337,7 @@ export default new VueRouter({
             },
           ]
         },
-        
+
       ],
     },
   ],

@@ -3,7 +3,7 @@
     <div class="header">
       <BreadCrumb></BreadCrumb>
     </div>
-    <div class="main" v-if="activeName=='first'">
+    <div class="main">
       <div class="main_hd">
         <router-link to="/dashboard/operationManger/commodityStoreManage/add">
           <el-button type="primary">商品新增</el-button>
@@ -14,20 +14,22 @@
           <el-table
             :data="auditedData"
             style="width: 100%" :header-cell-style="{background:'#f5f5f8',color:'#909399'}">
-            <el-table-column label="商品封面" min-width="12" :align="'center'">
+            <el-table-column label="商品封面" min-width="12" :align="'center'" prop="cover">
               <template slot-scope="scope">
-                <img :src="'./../../../static/images/role_member.png'" alt="">
+                <div style="display: flex;justify-content: center;align-items: center">
+                  <div :style="'width:60px;height:60px;background:url('+/img/+scope.row.cover+'/360) center center / cover no-repeat;'"></div>
+                </div>
               </template>
             </el-table-column>
-            <el-table-column prop="goodsName" label="商品名称" min-width="25">
+            <el-table-column prop="name" label="商品名称" min-width="25">
             </el-table-column>
-            <el-table-column prop="goodsDescription" label="商品介绍" min-width="30">
+            <el-table-column prop="description" label="商品介绍" min-width="30">
             </el-table-column>
-            <el-table-column label="操作" min-width="30" :align="'center'">
+            <el-table-column label="操作" min-width="30" :align="'center'" prop="waresId">
               <template slot-scope="scope">
-                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">编辑</a>
+                <a :href="'http://localhost:8080/#/dashboard/operationManger/commodityStoreManage/edit/'+scope.row.waresId" style="color:#409eff;">编辑</a>
                 <span>|</span>
-                <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#fe6a58;">删除</a>
+                <a :href="'#'" style="color:#fe6a58;" @click.prevent="deleteWares(scope.row.waresId)">删除</a>
               </template>
             </el-table-column>
           </el-table>
@@ -46,12 +48,32 @@ export default {
   name: 'CommodityStoreManage',
   data() {
     return {
-      activeName: 'first',
       auditedData: [],
     };
   },
   methods: {
     handleClick(tab, event) {},
+    deleteWares(waresId) {
+      console.log(waresId);
+      this.axios.post('api/cgi/m1/wares/remove',{
+        "waresId": waresId
+      }).then((res) => {
+        console.log(res);
+        if(res.data.code === 200) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+        }
+      }).catch((err) => {
+        console.log(err);
+        this.$message.error('删除失败');
+      });
+      let idx = this.auditedData.findIndex((item) => {
+        return item.waresId === waresId;
+      });
+      this.auditedData.splice(idx, 1);
+    },
   },
   mounted() {
     this.axios.get('api/cgi/m1/wares/select').then((res) => {

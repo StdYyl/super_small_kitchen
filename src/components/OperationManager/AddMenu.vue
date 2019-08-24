@@ -38,11 +38,12 @@
                 <el-form-item label="菜谱封面" prop="menuImgUrl">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :action="host"
                     :show-file-list="false"
                     :on-success="handleMenuImgAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="ruleForm.menuImgUrl" :src="ruleForm.menuImgUrl" class="avatar">
+                    :before-upload="beforeAvatarUpload"
+                    :data="uploadFile.data">
+                    <div v-if="ruleForm.menuImgUrl" :style="'background:url('+/img/+ruleForm.menuImgUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     <div class="el-upload__tip" slot="tip">上传一张最佳的效果图，有助于提高购买率</div>
                   </el-upload>
@@ -54,11 +55,12 @@
                 <el-form-item label="菜谱展示图" prop="menuShowImgUrl">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :action="host"
                     :show-file-list="false"
                     :on-success="handleMenuShowAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img v-if="ruleForm.menuShowImgUrl" :src="ruleForm.menuShowImgUrl" class="avatar avatar_small">
+                    :before-upload="beforeAvatarUpload"
+                    :data="uploadFile.data">
+                    <div v-if="ruleForm.menuShowImgUrl" :style="'background:url('+/img/+ruleForm.menuShowImgUrl+'/360) center center / cover no-repeat;'" class="avatar avatar_small"></div>
                     <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small"></i>
                     <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -147,12 +149,12 @@
                       <template slot-scope="scope">
                         <el-upload
                           class="avatar-uploader"
-                          action="https://jsonplaceholder.typicode.com/posts/"
+                          :action="host"
                           :show-file-list="false"
                           :on-success="handleMenuStepAvatarSuccess"
-                          :before-upload="beforeAvatarUpload">
-                          <img v-if="scope.row.stepImg"
-                               :src="scope.row.stepImg" class="avatar avatar_small">
+                          :before-upload="beforeAvatarUpload"
+                          :data="uploadFile.data">
+                          <div v-if="scope.row.stepImg" :style="'background:url('+/img/+scope.row.stepImg+'/360) center center / cover no-repeat;'" class="avatar avatar_small"></div>
                           <i v-else class="el-icon-plus avatar-uploader-icon
                   avatar-uploader-icon_small" @click="findImgIdx(scope.row)"></i>
                         </el-upload>
@@ -172,7 +174,9 @@
                     <el-table-column width="130" :align="'center'" prop="tagName">
                       <template slot-scope="scope">
                         <el-button type="default"
-                                   plain @click="bindTags(scope.row.id)">{{scope.row.tagName}}</el-button>
+                                   plain @click="bindTags(scope.row.id)" v-if="scope.row.tagName === ''">绑定指令集</el-button>
+                        <el-button type="default"
+                                   plain @click="bindTags(scope.row.id)" v-else>指令集:{{scope.row.tagName}}</el-button>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -191,7 +195,12 @@
               <div class="form_item">
                 <el-form-item label="智能锅选择">
                   <el-button type="primary"
-                             plain @click="selectPan">选择智能锅</el-button>
+                             plain @click="selectPanList">选择智能锅</el-button>
+                  <div v-if="true" v-for="(item,index) in ruleForm.selectedPan" :key="index" style="margin-top: 10px;display: flex;align-items: center">
+                    <div :style="'width:80px;height:80px;background:url('+/img/+item.cover+'/360) center center / cover no-repeat;'"></div>
+                    <span :style="'margin: 0 20px 0 10px;'">{{item.name}}</span>
+                    <el-button type="danger" plain @click="deletePan(index)">删除</el-button>
+                  </div>
                 </el-form-item>
               </div>
             </div>
@@ -243,9 +252,9 @@
                 </el-table-column>
                 <el-table-column prop="name" label="商品名称" min-width="3">
                 </el-table-column>
-                <el-table-column label="操作" min-width="3" :align="'center'">
+                <el-table-column label="操作" min-width="3" :align="'center'" prop="goodsId">
                   <template slot-scope="scope">
-                    <a :href="'http://localhost:8080/#/dashboard/main_page'" style="color:#409eff;">选择</a>
+                    <a :href="'#'" style="color:#409eff;" @click.prevent="selectPan(scope.row.goodsId)">选择</a>
                   </template>
                 </el-table-column>
               </el-table>
@@ -281,7 +290,6 @@ export default {
         flavorName: '',
         difficulty: '',
         useTime: '',
-        menuDescription: '',
         materialData: [
           {
             id: new Date().getTime(),
@@ -296,9 +304,12 @@ export default {
             id: new Date().getTime(),
             stepImg: '',
             stepDetail: '',
-            tagName: '绑定指令集',
+            tagName: '',
           },
         ],
+        menuDescription: '',
+        selectedPan: [],
+        isSelectedPan: false,
       },
       tagsSelect: {
         searchName: '',
@@ -366,6 +377,9 @@ export default {
       goodsData: [],
       dialogPanVisible: false,
       dialogTagVisible: false,
+      uploadFile: {},
+      host: '',
+      host_oos: 'img',
     };
   },
   methods: {
@@ -382,7 +396,94 @@ export default {
           console.log(this.ruleForm.useTime);
           console.log(this.ruleForm.menuStep);
           console.log(this.ruleForm.menuDescription);
-          alert('submit!');
+          let materials = [];
+          this.ruleForm.materialData.forEach((item) => {
+            materials.push({
+              "name": item.materialName,
+              "info": item.materialAmount
+            });
+          });
+          let steps = [];
+          this.ruleForm.menuStep.forEach((item1, index) => {
+            this.tagsData.forEach((item2) => {
+              if (item2.name === item1.tagName) {
+                steps.push({
+                  "step": index+1,
+                  "cover": item1.stepImg,
+                  "video": "",
+                  "images": [
+                    item1.stepImg,
+                  ],
+                  "detail": item1.stepDetail,
+                  "directiveSetId": item2.directiveSetId,
+                });
+              }
+            });
+          });
+          console.log(steps);
+          let cookCategoryIds = [];
+          let promise = new Promise((resolve, reject) => {
+            this.axios.get('api/cgi/m/cookbook/category/select').then((res) => {
+              console.log(res.data.body);
+              let cookCategoryName = '';
+              this.menuOptions.forEach((item1) => {
+                item1.options.forEach((item2) => {
+                  if(item2.value === this.ruleForm.menuSort){
+                    cookCategoryName = item1.label;
+                  }
+                });
+              });
+              if(cookCategoryName) {
+                res.data.body.forEach((item) => {
+                  if (item.name === cookCategoryName) {
+                    cookCategoryIds.push(item.cookCategoryId);
+                  }
+                });
+              }
+              resolve(cookCategoryIds);
+            }).catch((err) => {
+              reject(err);
+            });
+          });
+          promise.then((cookCategoryIds) => {
+            this.axios.post('api/cgi/m/cookbook/create',{
+              "cookCategoryIds": cookCategoryIds,
+              "name": this.ruleForm.menuName,
+              "cover": this.ruleForm.menuImgUrl,
+              "images": [
+                this.ruleForm.menuShowImgUrl
+              ],
+              "description": this.ruleForm.menuDescription,
+              "materials": materials,
+              "features": [
+                {
+                  "name": "口味",
+                  "info": this.ruleForm.flavorName
+                },
+                {
+                  "name": "难度",
+                  "info": this.ruleForm.difficulty
+                },
+                {
+                  "name": "用时",
+                  "info": this.ruleForm.useTime
+                }
+              ],
+              "steps": steps,
+              "sort": 1,
+              "status": 1
+            }).then((res) => {
+              console.log(res);
+              this.$router.push('/dashboard/operationManger/menuManage');
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              });
+            }).catch((err) => {
+              console.log(err);
+              this.$message.error('添加失败');
+            });
+          });
         } else {
           console.log('error submit!!');
           return false;
@@ -403,17 +504,24 @@ export default {
       this.ruleForm.materialData.splice(idx, 1);
     },
     handleMenuImgAvatarSuccess(res, file) {
-      this.ruleForm.menuImgUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.menuImgUrl = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.menuImgUrl);
     },
     handleMenuShowAvatarSuccess(res, file) {
-      this.ruleForm.menuShowImgUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.menuShowImgUrl = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.menuShowImgUrl);
     },
     handleMenuStepAvatarSuccess(res, file) {
-      console.log(file);
-      this.ruleForm.tempMenuStep.stepImg = URL.createObjectURL(file.raw);
-      // this.ruleForm.menuShowImgUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.tempMenuStep.stepImg = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.tempMenuStep.stepImg);
     },
-    beforeAvatarUpload(file) {
+    async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -423,14 +531,46 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return isValidate && isLt2M;
+      if(isValidate && isLt2M) {
+        const result = await this.fsSignature(file);
+        let data = result.data.body;
+        this.uploadFile.data = {
+          Filename: data.dir + '.' +
+            (file.name.split('.')[1].replace('png', 'jpg') || file.name.split('.')[1].replace('jpeg', 'jpg')),
+          key:
+            data.dir + '.' +
+            (file.name.split('.')[1].replace('png', 'jpg') || file.name.split('.')[1].replace('jpeg', 'jpg')),
+          policy: data.policy,
+          OSSAccessKeyId: data.accessid,
+          success_action_status: "200",
+          signature: data.signature,
+        };
+        this.host = data.host;
+        return true;
+      }
+      else{
+        return false;
+      }
+    },
+    fsSignature(file) {
+      return new Promise((resolve, reject) => {
+        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
+          if(res.status === 200) {
+            if(res.data.code === 200){
+              resolve(res);
+            }
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
     },
     addStep() {
       this.ruleForm.menuStep.push({
         id: new Date().getTime(),
         stepImg: '',
         stepDetail: '',
-        tagName: '绑定指令集',
+        tagName: '',
       });
     },
     deleteStep(id) {
@@ -456,10 +596,10 @@ export default {
       let tag = this.tagsData.find((item, index) => {
         return item.directiveSetId === id;
       });
-      this.ruleForm.menuStep[this.ruleForm.menuStepIdx].tagName = '指令集:'+tag.name;
+      this.ruleForm.menuStep[this.ruleForm.menuStepIdx].tagName = tag.name;
       this.dialogTagVisible = false;
     },
-    selectPan() {
+    selectPanList() {
       this.axios.get('api/cgi/m/goods/select').then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
@@ -468,6 +608,27 @@ export default {
           }
         }
       });
+    },
+    selectPan(goodsId) {
+      this.axios.get('api/cgi/m2/goods/detail?goodsId='+goodsId).then((res) => {
+        if(res.status === 200) {
+          if(res.data.code === 200) {
+            console.log(res.data.body);
+            this.ruleForm.selectedPan.push(res.data.body);
+            this.ruleForm.isSelectPan = true;
+            this.dialogPanVisible = false;
+          }
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
+    deletePan(index) {
+      console.log(index);
+      this.ruleForm.selectedPan.splice(index, 1);
+      if(this.ruleForm.selectedPan.length === 0) {
+        this.ruleForm.isSelectedPan = false;
+      }
     },
     findImgIdx(step) {
       this.ruleForm.tempMenuStep = step;

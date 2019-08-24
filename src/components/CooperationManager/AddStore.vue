@@ -56,11 +56,12 @@
             <el-form-item label="中央厨房logo" prop="imageLogoUrl" ref="uploadElement">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host"
                 :show-file-list="false"
                 :on-success="handleLogoAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageLogoUrl" :src="ruleForm.imageLogoUrl" class="avatar">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
+                <div v-if="ruleForm.imageLogoUrl" :style="'background:url('+/img/+ruleForm.imageLogoUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -144,23 +145,24 @@
             <el-form-item label="身份证正面照" prop="imageCardFrontUrl">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host"
                 :show-file-list="false"
                 :on-success="handleCardFrontAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageCardFrontUrl"
-                     :src="ruleForm.imageCardFrontUrl" class="avatar">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
+                <div v-if="ruleForm.imageCardFrontUrl" :style="'background:url('+/img/+ruleForm.imageCardFrontUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
             <el-form-item label="身份证反面照" prop="imageCardEndUrl">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host"
                 :show-file-list="false"
                 :on-success="handleCardEndAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.imageCardEndUrl" :src="ruleForm.imageCardEndUrl" class="avatar">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
+                <div v-if="ruleForm.imageCardEndUrl" :style="'background:url('+/img/+ruleForm.imageCardEndUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -178,12 +180,12 @@
             <el-form-item label="营业执照照片" prop="businessLicenseImg">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host"
                 :show-file-list="false"
                 :on-success="handleBusinessLicenseAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.businessLicenseImg"
-                     :src="ruleForm.businessLicenseImg" class="avatar">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
+                <div v-if="ruleForm.businessLicenseImg" :style="'background:url('+/img/+ruleForm.businessLicenseImg+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -193,12 +195,12 @@
             <el-form-item label="卫生许可证照片" prop="hygieneLicenseImg">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="host"
                 :show-file-list="false"
                 :on-success="handleHygieneLicenseAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="ruleForm.hygieneLicenseImg"
-                     :src="ruleForm.hygieneLicenseImg" class="avatar">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
+                <div v-if="ruleForm.hygieneLicenseImg" :style="'background:url('+/img/+ruleForm.hygieneLicenseImg+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -258,7 +260,6 @@ export default {
       ruleForm: {
         name: '',
         imageLogoUrl: '',
-        imageLogoUrl_plus: '.jpg',
         type: '',
         detail_address: '',
         simpleName: '',
@@ -268,15 +269,11 @@ export default {
         chargeTel: '',
         chargeId: '',
         imageCardFrontUrl: '',
-        imageCardFrontUrl_plus: '.jpg',
         imageCardEndUrl: '',
-        imageCardEndUrl_plus: '.jpg',
         businessLicenseId: '',
         businessLicenseImg: '',
-        businessLicenseImg_plus: '.jpg',
         hygieneLicenseId: '',
         hygieneLicenseImg: '',
-        hygieneLicenseImg_plus: '.jpg',
         alipayId: '',
         transferBank: '',
         bankId: '',
@@ -349,13 +346,13 @@ export default {
         ],
       },
       options: [{
-        value: '自营',
+        value: 'self',
         label: '自营',
       }, {
-        value: '非自营',
+        value: 'partner',
         label: '非自营',
       }, {
-        value: '连锁',
+        value: 'chain',
         label: '连锁',
       }],
       detail_address: '',
@@ -424,12 +421,9 @@ export default {
         },
       }],
       step_num: 1,
-      upload_options: {
-        accessKeyId: 'LTAII4cVHcL4pUfp',
-        accessKeySecret: 'j5Of6NKeaVteUnbT5znHCwTczwDnWl',
-      },
-      client: null,
-      files: [],
+      uploadFile: {},
+      host: '',
+      host_oos: 'img',
     };
   },
   created() {
@@ -442,52 +436,12 @@ export default {
     });
   },
   mounted() {
-    this.client = new OSS({
-      ...this.upload_options
-    });
-    console.log(this.client);
+    console.log(this.$cookie.get('passport'));
   },
   methods: {
     submitForm(formName) {
-      // this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-      //   console.log(res);
-      // }).catch((err) => {
-      //   console.log(err);
-      // });
-      this.files.forEach((item) => {
-        console.log(item);
-        this.client
-          .multipartUpload(item.name, item, {
-            progress: (percentage, checkpoint, res) => {
-              console.log(percentage, checkpoint, res)
-            },
-            meta: {
-              'Content-Type': 'application/json'
-            }
-          })
-          .then(result => {
-            console.log('result', result)
-          })
-          .catch(err => {
-            console.log('err', err)
-            console.log('err.name : ' + err.name)
-            console.log('err.message : ' + err.message)
-          });
-      });
-
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.step_num = 4;
-          this.$store.dispatch('next', 4);
-          var type = '';
-          if(this.ruleForm.type === '非自营'){
-            type = 'partner';
-          }else if(this.ruleForm.type === '自营'){
-            type = 'self';
-          }else if(this.ruleForm.type === '连锁'){
-            type = 'chain';
-          }
-          console.log(type);
           let vendor = {
             "mobile": this.$store.state.manager.mobile,
             "password": this.$store.state.manager.pass,
@@ -495,7 +449,7 @@ export default {
             "name": this.ruleForm.name,
             "shortName": this.ruleForm.simpleName,
             "cover": this.ruleForm.imageLogoUrl,
-            "type": type,
+            "type": this.ruleForm.type,
             "images": [],
             "description": this.ruleForm.description,
             "introduction": this.ruleForm.introduction,
@@ -517,10 +471,11 @@ export default {
             "remark": this.ruleForm.note,
             "status": 1
           };
-          console.log(this.ruleForm.imageLogoUrl.replace('blob:http://localhost:8080/','t2/vendor/190816/').concat(this.ruleForm.businessLicenseImg_plus));
           this.axios.post('api/cgi/m0/vendor/create', vendor).then((res) => {
             if(res.status === 200){
               if(res.data.code === 200){
+                this.step_num = 4;
+                this.$store.dispatch('next', 4);
                 console.log(res.data.body.vendorId);
               }
             }
@@ -534,50 +489,36 @@ export default {
       });
     },
     handleLogoAvatarSuccess(res, file) {
-      this.ruleForm.imageLogoUrl = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageLogoUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageLogoUrl_plus = '.jpg';
-      }
-      this.files.push(file);
+      this.ruleForm.imageLogoUrl = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.imageLogoUrl);
     },
     handleCardFrontAvatarSuccess(res, file) {
-      this.ruleForm.imageCardFrontUrl = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageCardFrontUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageCardFrontUrl_plus = '.jpg';
-      }
-      this.files.push(file);
+      this.ruleForm.imageCardFrontUrl = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.imageCardFrontUrl);
     },
     handleCardEndAvatarSuccess(res, file) {
-      this.ruleForm.imageCardEndUrl = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.imageCardEndUrl_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.imageCardEndUrl_plus = '.jpg';
-      }
+      this.ruleForm.imageCardEndUrl = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.imageCardEndUrl);
     },
     handleBusinessLicenseAvatarSuccess(res, file) {
-      this.ruleForm.businessLicenseImg = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.businessLicenseImg_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.businessLicenseImg_plus = '.jpg';
-      }
-      this.files.push(file);
+      this.ruleForm.businessLicenseImg = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.businessLicenseImg);
     },
     handleHygieneLicenseAvatarSuccess(res, file) {
-      this.ruleForm.hygieneLicenseImg = URL.createObjectURL(file.raw);
-      if(file.raw.type === 'image/png'){
-        this.ruleForm.hygieneLicenseImg_plus = '.png';
-      }else if(file.raw.type === 'image/ipg'){
-        this.ruleForm.hygieneLicenseImg_plus = '.jpg';
-      }
-      this.files.push(file);
+      this.ruleForm.hygieneLicenseImg = this.uploadFile.data.key;
+      this.uploadFile = {};
+      this.host = '';
+      console.log(this.ruleForm.hygieneLicenseImg);
     },
-    beforeAvatarUpload(file) {
+    async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -587,7 +528,39 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!');
       }
-      return isValidate && isLt2M;
+      if(isValidate && isLt2M) {
+        const result = await this.fsSignature(file);
+        let data = result.data.body;
+        this.uploadFile.data = {
+          Filename: data.dir + '.' +
+            (file.name.split('.')[1].replace('png', 'jpg') || file.name.split('.')[1].replace('jpeg', 'jpg')),
+          key:
+            data.dir + '.' +
+            (file.name.split('.')[1].replace('png', 'jpg') || file.name.split('.')[1].replace('jpeg', 'jpg')),
+          policy: data.policy,
+          OSSAccessKeyId: data.accessid,
+          success_action_status: "200",
+          signature: data.signature,
+        };
+        this.host = data.host;
+        return true;
+      }
+      else{
+        return false;
+      }
+    },
+    fsSignature(file) {
+      return new Promise((resolve, reject) => {
+        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
+          if(res.status === 200) {
+            if(res.data.code === 200){
+              resolve(res);
+            }
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
     },
     changeLocation(value) {
       // this.$store.dispatch('change_pos', [value[0], value[1]]);
