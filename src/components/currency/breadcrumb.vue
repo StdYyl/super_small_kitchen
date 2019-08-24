@@ -20,7 +20,7 @@
       }
     },
     mounted() {
-      console.log(this.$route.matched)
+      //console.log(this.$route.matched)
       let routerData = this.$route.matched;
       var breadcrumbItem = {};
       for (var i = 0; i < routerData.length; i++) {

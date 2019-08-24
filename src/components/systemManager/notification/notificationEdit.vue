@@ -7,6 +7,9 @@
       <el-form label-position="top" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
                class="demo-ruleForm">
         <el-form-item class="shortSelect" label="通知类型" prop="type">
+          <!--          -->
+        </el-form-item>
+        <div>
           <el-select v-model="ruleForm.type" placeholder="请选择" value="ruleForm.type">
             <el-option
               v-for="typeItem in typeList"
@@ -14,30 +17,37 @@
               :label="typeItem.name"
               :value="typeItem.typeId"></el-option>
           </el-select>
-        </el-form-item>
+        </div>
         <el-form-item class="middleSelect" label="通知标题" prop="title">
-          <el-input style="width: 500px;" placeholder="请输入通知标题" v-model="ruleForm.title"></el-input>
+
         </el-form-item>
+        <div>
+          <el-input style="width: 500px;" placeholder="请输入通知标题" v-model="ruleForm.title"></el-input>
+        </div>
         <el-form-item label="文章简介" prop="description">
+
+        </el-form-item>
+        <div>
           <el-input style="width: 500px;" type="textarea" placeholder="请输入文章简介"
                     v-model="ruleForm.description"></el-input>
+        </div>
+        <el-form-item label="文章详情" prop="content">
+
         </el-form-item>
-        <el-form-item label="文章详情">
-          <div class="app-container calendar-list-container">
-            <div style="width: 90%;">
-              <editor
-                class="editor"
-                :value="content"
-                :setting="editorSetting"
-                @show="editors"
-                :with-credentials = "withCredentials"
-                @on-upload-fail         = "onEditorReady"
-                @on-upload-success= "onEditorUploadComplete"></editor>
-            </div>
+        <div class="app-container calendar-list-container">
+          <div style="width: 90%;">
+            <editor
+              class="editor"
+              :value="content"
+              :setting="editorSetting"
+              @show="editors"
+              :with-credentials="withCredentials"
+              @on-upload-fail="onEditorReady"
+              @on-upload-success="onEditorUploadComplete"></editor>
           </div>
-        </el-form-item>
+        </div>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即更新</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">立即添加</el-button>
           <el-button @click="resetForm">取消</el-button>
         </el-form-item>
       </el-form>
@@ -53,6 +63,26 @@
     name: 'notificationEdit',
     components: { breadcrumb,editor },
     data() {
+      var validateType = (rule, value, callback) => {
+        if (!this.ruleForm.type) {
+          return callback(new Error('请填写通知类型'));
+        }
+      };
+      var validateTitle = (rule, value, callback) => {
+        if (!this.ruleForm.title) {
+          return callback(new Error('请填写通知标题'));
+        }
+      };
+      var validateDescription = (rule, value, callback) => {
+        if (!this.ruleForm.description) {
+          return callback(new Error('请填写通知简介'));
+        }
+      };
+      var validateContent = (rule, value, callback) => {
+        if (!this.content) {
+          return callback(new Error('请填写通知内容'));
+        }
+      };
       return {
         typeList: [
           {
@@ -79,16 +109,16 @@
         },
         rules: {
           type: [
-            { required: true, message: '请填写通知类型', trigger: 'blur' }
+            { required: true,validator: validateType, trigger: 'blur' }
           ],
           title: [
-            { required: true, message: '请填写通知标题', trigger: 'blur' },
+            { required: true,validator: validateTitle, trigger: 'blur' },
           ],
           description: [
-            { required: true, message: '请填写通知简介', trigger: 'blur' },
+            { required: true,validator: validateDescription, trigger: 'blur' },
           ],
           content: [
-            { required: true, message: '请填写通知内容', trigger: 'blur' },
+            { required: true,validator: validateContent, trigger: 'blur' },
           ],
         }
       };
@@ -163,6 +193,24 @@
       .el-input__inner {
         width: 450px;
       }
+    }
+    .el-form-item{
+      display: flex;
+    }
+    .el-form-item__label{
+      flex: 1;
+    }
+    .el-form-item__content{
+      flex: 7;
+    }
+    .el-form-item__error{
+      top: 30%;
+    }
+    .el-form--label-top .el-form-item__label{
+      padding: 0;
+    }
+    .app-container{
+      margin-bottom: 15px;
     }
   }
 </style>
