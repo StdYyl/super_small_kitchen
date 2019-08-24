@@ -1,24 +1,29 @@
 <template>
-  <div class="room">
-    <headCrumb></headCrumb>
-    <div class="bd_mes">
+    <div class="room">
+      <breadcrumbS></breadcrumbS>
+      <div class="bd_mes">
         <router-view></router-view>
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
-  import headCrumb from './breadcrumbS'
+  import breadcrumbS from './breadcrumbS';
   export default {
-    name: 'adminManagement',
+    name: 'recommendManagement',
     components:{
-      headCrumb,
+      breadcrumbS,
+    },
+    data(){
+      return{
+        breadcrumb:''
+      }
     },
   };
 </script>
 
 <style scoped>
-  .room {
+  .room{
     max-width: 1280px;
   }
   .header {
@@ -29,11 +34,9 @@
     background-color: #fff;
     font-weight: 400;
   }
-
   .title {
     font: normal 500 20px/56px '微软雅黑';
   }
-
   .bd_mes {
     background-color: #fff;
     min-height: 800px;

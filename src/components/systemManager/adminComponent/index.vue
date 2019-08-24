@@ -54,12 +54,10 @@
     methods: {
       //添加管理员信息
       addAdmin() {
-        this.$emit('fun', 'adminAdd');
         this.$router.push('adminManagement/add');
       },
       //编辑（修改管理员信息）
       handleClick(id) {
-        this.$emit('fun', 'editor');
         this.$router.push('adminManagement/editor/' + id);
       },
       //请求接口，获取管理员数据
