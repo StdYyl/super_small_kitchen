@@ -22,8 +22,19 @@
           <el-input style="width: 500px;" type="textarea" placeholder="请输入文章简介"
                     v-model="ruleForm.description"></el-input>
         </el-form-item>
-        <el-form-item label="文章详情" prop="content">
-          <el-input type="textarea" v-model="ruleForm.content"></el-input>
+        <el-form-item label="文章详情">
+          <div class="app-container calendar-list-container">
+            <div style="width: 90%;">
+              <editor
+                class="editor"
+                :value="content"
+                :setting="editorSetting"
+                @show="editors"
+                :with-credentials = "withCredentials"
+                @on-upload-fail         = "onEditorReady"
+                @on-upload-success= "onEditorUploadComplete"></editor>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">立即更新</el-button>
@@ -37,10 +48,10 @@
 <script>
   import { getNotification,editNotification } from '@/api/notification';
   import breadcrumb from '@/components/currency/breadcrumb';
-
+  import editor from '@/components/currency/tinymceEditor'
   export default {
     name: 'notificationEdit',
-    components: { breadcrumb },
+    components: { breadcrumb,editor },
     data() {
       return {
         typeList: [
@@ -53,7 +64,11 @@
             name: '公共通知'
           }
         ],
-        imageUrl: '',
+        editorSetting: { // 配置富文本编辑器高
+          height: 500
+        },
+        withCredentials: true,
+        content: '', // 富文本编辑器双向绑定的内容
         ruleForm: {
           content: '',
           description: '',
@@ -82,6 +97,7 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            this.ruleForm.content = this.content;
             editNotification(this.ruleForm)
               .then(value => {
                 if (value.code === 200) {
@@ -97,7 +113,7 @@
                   });
                 }
               });
-            console.log(this.ruleForm);
+            //console.log(this.ruleForm);
           } else {
             console.log('error submit!!');
             return false;
@@ -107,9 +123,25 @@
       resetForm() {
         this.$router.back(-1);
       },
+      editors(content) { // editor组件传过来的值赋给content
+        //console.log(content)
+        this.content = content
+      },
+      onEditorReady(ins, ina) { // 上传失败的函数
+        console.log('ins')
+        console.log(ins)
+        console.log(ina)
+      },
+      onEditorUploadComplete(json) { // 处理上传图片后返回数据，添加img标签到编辑框内
+        console.log('json')
+        console.log(json)
+        console.log(json[0].data.filePath)
+        //this.content = this.content + '<img src=' + json[0].data.filePath + '>'
+      },
       init: function () {
         getNotification(this.$route.params.id).then(val => {
           this.ruleForm = val;
+          this.content = val.content;
         });
       }
     },
