@@ -337,7 +337,50 @@ export default new VueRouter({
             },
           ]
         },
-
+        {
+          path:'systemManager/directiveSet',
+          meta:{title:'指令集管理'},
+          component: () => import('../components/systemManager/directiveSet/directiveSetIndex'),
+          children:[
+            {
+              path:'',
+              component: () => import('../components/systemManager/directiveSet/directiveSet'),
+              meta:{title:'指令集管理'}
+            },
+            {
+              path:'add',
+              component:() => import('../components/systemManager/directiveSet/directiveSetAdd'),
+              meta:{title:'指令集添加'}
+            },
+            {
+              path:'edit/:id',
+              component:() => import('../components/systemManager/directiveSet/directiveSetEdit'),
+              meta:{title:'指令集编辑'}
+            },
+          ]
+        },
+        {
+          path:'systemManager/notification',
+          meta:{title:'通知管理'},
+          component: () => import('../components/systemManager/notification/notificationIndex'),
+          children:[
+            {
+              path:'',
+              component: () => import('../components/systemManager/notification/notification'),
+              meta:{title:'通知管理'}
+            },
+            {
+              path:'add',
+              component:() => import('../components/systemManager/notification/notificationAdd'),
+              meta:{title:'通知新增'}
+            },
+            {
+              path:'edit/:id',
+              component:() => import('../components/systemManager/notification/notificationEdit'),
+              meta:{title:'通知更新'}
+            },
+          ]
+        }
       ],
     },
   ],
