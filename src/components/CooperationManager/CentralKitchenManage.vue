@@ -119,6 +119,7 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {getVendorList} from '../../api/vendor';
 export default {
   name: 'CentralKitchenManage',
   data() {
@@ -132,29 +133,15 @@ export default {
   methods: {
     handleClick(tab, event) {},
   },
-  mounted() {
-    this.axios.get('api/cgi/m0/vendor/select?auditStatus=approved').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          console.log(res.data.body.list);
-          this.auditedData = res.data.body.list;
-        }
-      }
-    });
-    this.axios.get('api/cgi/m0/vendor/select?auditStatus=auditing').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.checkPendingData = res.data.body.list;
-        }
-      }
-    });
-    this.axios.get('api/cgi/m0/vendor/select?auditStatus=rejected').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.rejectedData = res.data.body.list;
-        }
-      }
-    });
+  async mounted() {
+    let auditedData = await getVendorList('approved');
+    this.auditedData = auditedData.data.body.list;
+
+    let checkPendingData = await getVendorList('auditing');
+    this.checkPendingData = checkPendingData.data.body.list;
+
+    let rejectedData = await getVendorList('rejected');
+    this.rejectedData = rejectedData.data.body.list;
   },
   components: {
     BreadCrumb,

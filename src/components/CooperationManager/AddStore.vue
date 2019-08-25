@@ -46,7 +46,6 @@
           </div>
         </div>
       </div>
-
       <div class="form">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
           <div class="step_first" v-show="step_num===1">
@@ -247,10 +246,30 @@
 <script>
 import BreadCrumb from '../BreadCrumb';
 import Vue from 'vue';
+// 地图插件
 import AMap from 'vue-amap';
+import {fetch, post} from "../../api/http";
 import OSS from 'ali-oss';
 
 Vue.use(AMap);
+AMap.initAMapApiLoader({
+  // 高德的key
+  key: 'c23a73bb2c062de16b9158396b2817de&plugin=AMap.Geocoder',
+  // 插件集合
+  plugin: [
+    'AMap.Autocomplete',
+    'AMap.PlaceSearch',
+    'AMap.Scale',
+    'AMap.OverView',
+    'AMap.ToolBar',
+    'AMap.MapType',
+    'AMap.PolyEditor',
+    'AMap.CircleEditor',
+    'AMap.Geolocation',
+    'AMap.CitySearch',
+  ],
+  v: '1.4.4',
+});
 const amapManager = new AMap.AMapManager();
 export default {
   name: 'AddStore',
@@ -391,13 +410,15 @@ export default {
                 self.location_content = result.formattedAddress;
                 self.$nextTick();
                 var province = '', city = '', district = '', street_number = '';
-                self.axios.get('api/cgi/map/locationToAddress?latitude=' + self.lat + '&longitude=' + self.lng).then((res) => {
+                fetch('api/cgi/map/locationToAddress',{
+                  "latitude": self.lat,
+                  "longitude": self.lng,
+                }).then((res) => {
                   console.log(res.data);
                   province = res.data.body.address_component.province;
                   city = res.data.body.address_component.city;
                   district = res.data.body.address_component.district;
                   street_number = res.data.body.address_component.street_number;
-
                   self.CityInfo.forEach((item1) => {
                     if (item1.label === province && item1.children) {
                       item1.children.forEach((item2) => {
@@ -427,7 +448,7 @@ export default {
     };
   },
   created() {
-    this.axios.get('api/cgi/map/getDistrictTree').then((res) => {
+    fetch('api/cgi/map/getDistrictTree').then((res) => {
       if (res.status === 200) {
         if (res.data.code === 200) {
           this.CityInfo = res.data.body;
@@ -437,6 +458,7 @@ export default {
   },
   mounted() {
     console.log(this.$cookie.get('passport'));
+    this.$store.dispatch('initStep');
   },
   methods: {
     submitForm(formName) {
@@ -471,7 +493,7 @@ export default {
             "remark": this.ruleForm.note,
             "status": 1
           };
-          this.axios.post('api/cgi/m0/vendor/create', vendor).then((res) => {
+          post('api/cgi/m0/vendor/create', vendor).then((res) => {
             if(res.status === 200){
               if(res.data.code === 200){
                 this.step_num = 4;
@@ -479,7 +501,7 @@ export default {
                 console.log(res.data.body.vendorId);
               }
             }
-          }).catch((err) => {
+          }, (err) => {
             console.log(err);
           });
         } else {
@@ -492,31 +514,26 @@ export default {
       this.ruleForm.imageLogoUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageLogoUrl);
     },
     handleCardFrontAvatarSuccess(res, file) {
       this.ruleForm.imageCardFrontUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageCardFrontUrl);
     },
     handleCardEndAvatarSuccess(res, file) {
       this.ruleForm.imageCardEndUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageCardEndUrl);
     },
     handleBusinessLicenseAvatarSuccess(res, file) {
       this.ruleForm.businessLicenseImg = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.businessLicenseImg);
     },
     handleHygieneLicenseAvatarSuccess(res, file) {
       this.ruleForm.hygieneLicenseImg = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.hygieneLicenseImg);
     },
     async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -550,16 +567,8 @@ export default {
       }
     },
     fsSignature(file) {
-      return new Promise((resolve, reject) => {
-        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-          if(res.status === 200) {
-            if(res.data.code === 200){
-              resolve(res);
-            }
-          }
-        }).catch((err) => {
-          reject(err);
-        });
+      return fetch('api/cgi/store/imageOssToken',{
+        "path": 'vendor',
       });
     },
     changeLocation(value) {
@@ -584,13 +593,16 @@ export default {
       });
       this.location_content = this.location;
       // 'https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8'
-      this.axios.get('https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8')
-        .then((res) => {
-          console.log(res);
-          this.lng = res.data.geocodes[0].location.split(',')[0];
-          this.lat = res.data.geocodes[0].location.split(',')[1];
-          this.center = [this.lng, this.lat];
-        });
+      fetch('https://restapi.amap.com/v3/geocode/geo',{
+        "address": this.location,
+        "output": 'JSON',
+        "key": '0728f7d760eab59115f64adca8a813e8',
+      }).then((res) => {
+        console.log(res);
+        this.lng = res.data.geocodes[0].location.split(',')[0];
+        this.lat = res.data.geocodes[0].location.split(',')[1];
+        this.center = [this.lng, this.lat];
+      });
     },
     nextStep(value) {
       this.step_num = value;

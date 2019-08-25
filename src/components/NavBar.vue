@@ -29,12 +29,13 @@
 </template>
 
 <script>
+import {loginOut} from "../api/manager";
 export default {
   name: 'NavBar',
   methods: {
     loginOut() {
       this.$store.dispatch('removeStorage');
-      this.axios.post('api/cgi/manager/logout', {}).then((res) => {
+      loginOut().then((res) => {
         console.log(res);
         if (res.data.code === 200) {
           this.$router.push('/login');

@@ -4,6 +4,7 @@ import {
   FIND,
   NEXT,
   PRIOR,
+  INITSTEP,
   CHANGE_POS,
   CLEAR_FROM,
   SET_STORAGE,
@@ -19,6 +20,9 @@ export default {
   },
   prior({ commit }, item) {
     commit(PRIOR, { item });
+  },
+  initStep({ commit }, item) {
+    commit(INITSTEP);
   },
   change_pos({ commit }, item) {
     commit(CHANGE_POS, { item });

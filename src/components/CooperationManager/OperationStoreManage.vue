@@ -117,6 +117,7 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {getSellerList} from '../../api/seller';
 export default {
   name: 'OperationStoreManage',
   data() {
@@ -130,29 +131,15 @@ export default {
   methods: {
     handleClick(tab, event) {},
   },
-  mounted() {
-    this.axios.get('api/cgi/m/seller/select?auditStatus=approved').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          console.log(res.data.body.list);
-          this.auditedData = res.data.body.list;
-        }
-      }
-    });
-    this.axios.get('api/cgi/m/seller/select?auditStatus=auditing').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.checkPendingData = res.data.body.list;
-        }
-      }
-    });
-    this.axios.get('api/cgi/m/seller/select?auditStatus=rejected').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.rejectedData = res.data.body.list;
-        }
-      }
-    });
+  async mounted() {
+    let auditedData = await getSellerList('approved');
+    this.auditedData = auditedData.data.body.list;
+
+    let checkPendingData = await getSellerList('auditing');
+    this.checkPendingData = checkPendingData.data.body.list;
+
+    let rejectedData = await getSellerList('rejected');
+    this.rejectedData = rejectedData.data.body.list;
   },
   components: {
     BreadCrumb,

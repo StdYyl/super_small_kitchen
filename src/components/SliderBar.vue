@@ -63,10 +63,8 @@
     <div class="menu_wrapper">
       <dl>
         <dt>
-          <router-link to="" tag="a">
-            <svg-icon icon-class="order"></svg-icon>
-            <span>财务结算</span>
-          </router-link>
+          <svg-icon icon-class="order"></svg-icon>
+          <span>财务结算</span>
         </dt>
         <dd>
           <router-link to="/dashboard/accountManage/vendorAccount"
@@ -119,7 +117,7 @@ export default {
   watch: {
     $route() {
       console.log('change');
-      if (!this.$cookie.get('passport')) {
+      if (!this.$cookie.get('passport') && this.$store.getters['getStorage']) {
         this.$router.push('/login');
       }
     }

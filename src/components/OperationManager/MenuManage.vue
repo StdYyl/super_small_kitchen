@@ -201,6 +201,7 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {removeCookBook, selectCookBookList} from "../../api/cookBook";
 export default {
   name: 'MenuManage',
   data() {
@@ -215,8 +216,8 @@ export default {
   methods: {
     handleClick(tab, event) {},
     deleteMenu(cookbookId) {
-      this.axios.post('api/cgi/m/cookbook/remove',{
-        "cookbookId": cookbookId
+      removeCookBook({
+        "cookbookId": cookbookId,
       }).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
@@ -229,35 +230,24 @@ export default {
       });
     },
   },
-  mounted() {
-    this.axios.get('api/cgi/m/cookbook/select?auditStatus=approved').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.auditedData = res.data.body.list;
-        }
-      }
+  async mounted() {
+    let auditedData = await selectCookBookList({
+      "auditStatus": 'approved',
     });
-    this.axios.get('api/cgi/m/cookbook/select?auditStatus=auditing').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.pendingData = res.data.body.list;
-        }
-      }
+    this.auditedData = auditedData.data.body.list;
+
+    let pendingData = await selectCookBookList({
+      "auditStatus": 'auditing',
     });
-    this.axios.get('api/cgi/m/cookbook/select?auditStatus=rejected').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.rejectedData = res.data.body.list;
-        }
-      }
+    this.pendingData = pendingData.data.body.list;
+
+    let rejectedData = await selectCookBookList({
+      "auditStatus": 'rejected',
     });
-    this.axios.get('api/cgi/m/cookbook/select').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          this.mineData = res.data.body.list;
-        }
-      }
-    });
+    this.rejectedData = rejectedData.data.body.list;
+
+    let mineData = await selectCookBookList({});
+    this.mineData = mineData.data.body.list;
   },
   components: {
     BreadCrumb,

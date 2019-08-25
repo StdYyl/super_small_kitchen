@@ -44,7 +44,7 @@
 
 <script>
 import LoginHeader from './../../components/LoginHeader';
-
+import {login} from "../../api/manager";
 export default {
   name: 'Login',
   data() {
@@ -79,7 +79,7 @@ export default {
   rules: {},
   methods: {
     submitForm() {
-      this.axios.post('api/cgi/manager/login', {
+      login({
         "mobile": this.dynamicValidateForm.phone,
         "password": this.dynamicValidateForm.pass,
       }).then((res) => {
@@ -103,7 +103,8 @@ export default {
     LoginHeader,
   },
   mounted() {
-    if (this.$cookie.get('passport') && this.$store.getters.getStorage()) {
+    console.log(this.$store);
+    if (this.$cookie.get('passport') && this.$store.getters['getStorage']) {
       this.$router.push('/dashboard');
     }
   },

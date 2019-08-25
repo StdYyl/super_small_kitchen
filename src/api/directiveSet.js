@@ -1,4 +1,5 @@
 import { requested } from './axiosed';
+import {fetch, post} from "./http";
 // 管理员获取指令集列表
 export async function getDirectiveSetList(form) {
   var url = 'api/cgi/m/directiveSet/select';
@@ -34,4 +35,8 @@ export async function addDirectiveSet(form) {
   var url = 'api/cgi/m0/directiveSet/create';
   let res = await requested(url,'post',form);
   return res.data;
+}
+
+export function selectDirectiveSetList(data) {
+  return fetch('api/cgi/m/directiveSet/select', data);
 }

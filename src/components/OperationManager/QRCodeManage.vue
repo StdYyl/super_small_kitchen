@@ -24,7 +24,6 @@
                   <div style="display: flex;flex-direction: column;
                 align-items: center;justify-content: center">
                     <div style="display: flex;justify-content: center;align-items: center">
-<!--                      <canvas width="100px" height="100px" id="canvas"></canvas>-->
                       <div :id="scope.row.cookbookId" :style="'width:100px;height:100px;'" :ref="scope.row.cookbookId"></div>
                     </div>
                     <span>{{scope.row.name}}</span>
@@ -50,6 +49,7 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {selectCookBookList} from '../../api/cookBook'
 import QRCode from 'qrcodejs2';
 export default {
   name: 'QRCodeManage',
@@ -62,9 +62,6 @@ export default {
   methods: {
     handleClick(tab, event) {},
     download(cookbookId, event) {
-      // console.log(document.querySelector('#'+cookbookId+'>img').src);
-      // event.target.href = document.querySelector('#'+cookbookId+'>img').src;
-      // event.target.click();
       var a = document.createElement('a');
       var e = new MouseEvent('click');
       // 下载图名字
@@ -76,7 +73,7 @@ export default {
     },
   },
   mounted() {
-    this.axios.get('api/cgi/m/cookbook/select').then((res) => {
+    selectCookBookList({}).then((res) => {
       if(res.status === 200){
         if(res.data.code === 200){
           this.auditedData = res.data.body.list;

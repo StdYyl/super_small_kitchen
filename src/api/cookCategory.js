@@ -1,4 +1,5 @@
 import { requested } from './axiosed';
+import {fetch, post} from "./http";
 // 用户获取菜谱列表
 export async function getCookBookList(cookCategoryId) {
   var url = 'api/cgi/cookbook/category/list';
@@ -34,4 +35,8 @@ export async function addCookBookCategory(form) {
   var url = 'api/cgi/m0/cookbook/category/create';
   let res = await requested(url,'post',form);
   return res.data;
+}
+
+export function getCookCategoryList() {
+  return fetch('api/cgi/m/cookbook/category/select');
 }

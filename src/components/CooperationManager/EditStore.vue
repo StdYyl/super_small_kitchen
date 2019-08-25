@@ -95,7 +95,8 @@
                 :action="host"
                 :show-file-list="false"
                 :on-success="handleCardFrontAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
+                :before-upload="beforeAvatarUpload"
+                :data="uploadFile.data">
                 <div v-if="ruleForm.imageCardFrontUrl" :style="'background:url('+/img/+ruleForm.imageCardFrontUrl+'/360) center center / cover no-repeat;'" class="avatar"></div>
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
@@ -175,9 +176,29 @@
 <script>
 import BreadCrumb from '../BreadCrumb';
 import Vue from 'vue';
+// 地图插件
 import AMap from 'vue-amap';
+import {fetch, post} from "../../api/http";
 
 Vue.use(AMap);
+AMap.initAMapApiLoader({
+  // 高德的key
+  key: 'c23a73bb2c062de16b9158396b2817de&plugin=AMap.Geocoder',
+  // 插件集合
+  plugin: [
+    'AMap.Autocomplete',
+    'AMap.PlaceSearch',
+    'AMap.Scale',
+    'AMap.OverView',
+    'AMap.ToolBar',
+    'AMap.MapType',
+    'AMap.PolyEditor',
+    'AMap.CircleEditor',
+    'AMap.Geolocation',
+    'AMap.CitySearch',
+  ],
+  v: '1.4.4',
+});
 const amapManager = new AMap.AMapManager();
 export default {
   name: "EditStore",
@@ -312,39 +333,7 @@ export default {
         events: {
           init(o) {
             o.getCurrentPosition((status, result) => {
-              // if (result && result.position) {
-              //   self.lng = result.position.lng;
-              //   self.lat = result.position.lat;
-              //   self.center = [self.lng, self.lat];
-              //   self.loaded = true;
-              //   self.location_content = result.formattedAddress;
-              //   self.$nextTick();
-              //   var province = '', city = '', district = '', street_number = '';
-              //   self.axios.get('api/cgi/map/locationToAddress?latitude=' + self.lat + '&longitude=' + self.lng).then((res) => {
-              //     console.log(res.data);
-              //     province = res.data.body.address_component.province;
-              //     city = res.data.body.address_component.city;
-              //     district = res.data.body.address_component.district;
-              //     street_number = res.data.body.address_component.street_number;
-              //
-              //     self.CityInfo.forEach((item1) => {
-              //       if (item1.label === province && item1.children) {
-              //         item1.children.forEach((item2) => {
-              //           if (item2.label === city) {
-              //             if (item2.children) {
-              //               item2.children.forEach((item3) => {
-              //                 if (item3.label === district) {
-              //                   self.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
-              //                   self.detail_address = street_number;
-              //                 }
-              //               });
-              //             }
-              //           }
-              //         });
-              //       }
-              //     });
-              //   });
-              // }
+
             });
           },
         },
@@ -355,7 +344,7 @@ export default {
     };
   },
   created() {
-    this.axios.get('api/cgi/map/getDistrictTree').then((res) => {
+    fetch('api/cgi/map/getDistrictTree').then((res) => {
       if (res.status === 200) {
         if (res.data.code === 200) {
           this.CityInfo = res.data.body;
@@ -365,7 +354,9 @@ export default {
   },
   mounted() {
     let vendorId = this.$route.params.vendorId;
-    this.axios.get('api/cgi/m0/vendor/detail?vendorId='+vendorId).then((res) => {
+    fetch('api/cgi/m0/vendor/detail',{
+      "vendorId": vendorId,
+    }).then((res) => {
       if(res.status === 200){
         if(res.data.code === 200){
           this.vendor = res.data.body;
@@ -390,43 +381,47 @@ export default {
           this.ruleForm.transferBank = this.vendor.bankCardName;
           this.ruleForm.bankId = this.vendor.bankCardNo;
           this.ruleForm.openingBank = this.vendor.bankOfDeposit;
-          this.axios.get('https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8')
-            .then((res) => {
-              this.lng = res.data.geocodes[0].location.split(',')[0];
-              this.lat = res.data.geocodes[0].location.split(',')[1];
-              this.center = [this.lng, this.lat];
-
-              var province = '', city = '', district = '', street_number = '';
-              province = res.data.geocodes[0].province;
-              city = res.data.geocodes[0].city;
-              district = res.data.geocodes[0].district;
-              street_number = res.data.geocodes[0].street + res.data.geocodes[0].number;
-                this.CityInfo.forEach((item1) => {
-                  if (item1.label === province && item1.children) {
-                    item1.children.forEach((item2) => {
-                      if (item2.label === city) {
-                        if (item2.children) {
-                          item2.children.forEach((item3) => {
-                            if (item3.label === district) {
-                              this.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
-                              this.detail_address = street_number;
-                            }
-                          });
-                        }
-                      }
-                    });
-                  }
-                });
-              });
         }
       }
+    }).then(() => {
+      fetch('https://restapi.amap.com/v3/geocode/geo',{
+        "address": this.vendor.address,
+        "output": 'JSON',
+        "key": '0728f7d760eab59115f64adca8a813e8',
+      }).then((res) => {
+        this.lng = res.data.geocodes[0].location.split(',')[0];
+        this.lat = res.data.geocodes[0].location.split(',')[1];
+        this.center = [this.lng, this.lat];
+
+        var province = '', city = '', district = '', street_number = '';
+        province = this.vendor.province;
+        city = this.vendor.city;
+        district = this.vendor.district;
+        street_number = this.vendor.streetNumber;
+        this.CityInfo.forEach((item1) => {
+          if (item1.label === province && item1.children) {
+            item1.children.forEach((item2) => {
+              if (item2.label === city) {
+                if (item2.children) {
+                  item2.children.forEach((item3) => {
+                    if (item3.label === district) {
+                      this.$store.dispatch('change_pos', [item1.value, item2.value, item3.value]);
+                      this.detail_address = street_number;
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+      });
     });
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.axios.post('api/cgi/m0/vendor/revise',{
+          post('api/cgi/m0/vendor/revise', {
             "vendorId": this.$route.params.vendorId,
             "name": this.ruleForm.name,
             "shortName": this.ruleForm.simpleName,
@@ -463,7 +458,7 @@ export default {
                 });
               }
             }
-          }).catch((err) => {
+          }, (err) => {
             console.log(err);
             this.$message.error('更新失败');
           });
@@ -477,31 +472,26 @@ export default {
       this.ruleForm.imageLogoUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageLogoUrl);
     },
     handleCardFrontAvatarSuccess(res, file) {
       this.ruleForm.imageCardFrontUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageCardFrontUrl);
     },
     handleCardEndAvatarSuccess(res, file) {
       this.ruleForm.imageCardEndUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.imageCardEndUrl);
     },
     handleBusinessLicenseAvatarSuccess(res, file) {
       this.ruleForm.businessLicenseImg = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.businessLicenseImg);
     },
     handleHygieneLicenseAvatarSuccess(res, file) {
       this.ruleForm.hygieneLicenseImg = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.hygieneLicenseImg);
     },
     async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -535,16 +525,8 @@ export default {
       }
     },
     fsSignature(file) {
-      return new Promise((resolve, reject) => {
-        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-          if(res.status === 200) {
-            if(res.data.code === 200){
-              resolve(res);
-            }
-          }
-        }).catch((err) => {
-          reject(err);
-        });
+      return fetch('api/cgi/store/imageOssToken',{
+        "path": 'vendor'
       });
     },
     changeLocation(value) {
@@ -569,13 +551,16 @@ export default {
       });
       this.location_content = this.location;
       // 'https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8'
-      this.axios.get('https://restapi.amap.com/v3/geocode/geo?address=' + this.location + '&output=JSON&key=0728f7d760eab59115f64adca8a813e8')
-        .then((res) => {
-          console.log(res);
-          this.lng = res.data.geocodes[0].location.split(',')[0];
-          this.lat = res.data.geocodes[0].location.split(',')[1];
-          this.center = [this.lng, this.lat];
-        });
+      fetch('https://restapi.amap.com/v3/geocode/geo',{
+        "address": this.location,
+        "output": 'JSON',
+        "key": '0728f7d760eab59115f64adca8a813e8'
+      }).then((res) => {
+        console.log(res);
+        this.lng = res.data.geocodes[0].location.split(',')[0];
+        this.lat = res.data.geocodes[0].location.split(',')[1];
+        this.center = [this.lng, this.lat];
+      });
     },
   },
   components: {

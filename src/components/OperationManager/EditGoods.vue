@@ -207,6 +207,11 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {fetch, post} from "../../api/http";
+import {selectCookBookList} from '../../api/cookBook';
+import {getGoodsList} from "../../api/goods";
+import {selectGoodsCategoryList} from "../../api/goodsCategory";
+import {reviseWares, getWaresDetail} from "../../api/wares";
 export default {
   name: "EditGoods",
   data() {
@@ -302,7 +307,7 @@ export default {
             goodsIdList.push(item.goodsId);
           });
           let promise = new Promise((resolve, reject) => {
-            this.axios.get('api/cgi/m/category/select').then((res) => {
+            selectGoodsCategoryList().then((res) => {
               if(res.status === 200) {
                 if(res.data.code === 200) {
                   res.data.body.forEach((item) => {
@@ -312,13 +317,12 @@ export default {
                   });
                 }
               }
-            }).catch((err) => {
+            }, (err) => {
               console.log(err);
-              reject(err);
             });
           });
           promise.then((categoryId) => {
-            this.axios.post('api/cgi/m1/wares/revise',{
+            reviseWares({
               "waresId": this.$route.params.waresId,
               "categoryId": categoryId,
               "cookbookId": this.ruleForm.selectedMenu.cookbookId,
@@ -345,7 +349,7 @@ export default {
                   });
                 }
               }
-            }).catch((err) => {
+            }, (err) => {
               console.log(err);
               this.$message.error('修改失败');
             });
@@ -360,19 +364,16 @@ export default {
       this.ruleForm.goodsImgUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.goodsImgUrl);
     },
     handleGoodsShowAvatarSuccess(res, file) {
       this.ruleForm.goodsShowImgUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.goodsImgUrl);
     },
     handleGoodsDetailAvatarSuccess(res, file) {
       this.ruleForm.goodsDetailImgUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.goodsImgUrl);
     },
     async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -406,20 +407,12 @@ export default {
       }
     },
     fsSignature(file) {
-      return new Promise((resolve, reject) => {
-        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-          if(res.status === 200) {
-            if(res.data.code === 200){
-              resolve(res);
-            }
-          }
-        }).catch((err) => {
-          reject(err);
-        });
+      return fetch('api/cgi/store/imageOssToken', {
+        "path": 'vendor',
       });
     },
     selectMenuList() {
-      this.axios.get('api/cgi/m/cookbook/select').then((res) => {
+      selectCookBookList({}).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.menuData = res.data.body.list;
@@ -430,7 +423,9 @@ export default {
     },
     searchMenu() {
       console.log(this.menuSelect.searchName);
-      this.axios.get('api/cgi/m/cookbook/select?search='+this.menuSelect.searchName).then((res) => {
+      selectCookBookList({
+        "search": this.menuSelect.searchName,
+      }).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             console.log(res.data.body.list);
@@ -441,7 +436,9 @@ export default {
     },
     selectMenu(cookbookId) {
       console.log(cookbookId);
-      this.axios.get('api/cgi/m/cookbook/select?search='+cookbookId).then((res) => {
+      selectCookBookList({
+        "search": cookbookId,
+      }).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.ruleForm.selectedMenu = res.data.body.list[0];
@@ -456,7 +453,7 @@ export default {
       this.ruleForm.selectedMenu = null;
     },
     selectGoodsList() {
-      this.axios.get('api/cgi/m/goods/select').then((res) => {
+      getGoodsList({}).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.goodsData = res.data.body.list;
@@ -467,7 +464,9 @@ export default {
     },
     searchGoods() {
       console.log(this.goodsSelect.searchName);
-      this.axios.get('api/cgi/m/goods/select?search='+this.goodsSelect.searchName).then((res) => {
+      getGoodsList({
+        "search": this.goodsSelect.searchName,
+      }).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.goodsData = res.data.body.list;
@@ -477,7 +476,9 @@ export default {
     },
     selectGoods(goodsId) {
       console.log(goodsId);
-      this.axios.get('api/cgi/m/goods/select?search='+goodsId).then((res) => {
+      getGoodsList({
+        "search": goodsId,
+      }).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.ruleForm.selectedGoods.push(res.data.body.list[0]);
@@ -495,7 +496,9 @@ export default {
     },
   },
   mounted() {
-    this.axios.get('api/cgi/m/wares/detail?waresId='+this.$route.params.waresId).then((res) => {
+    getWaresDetail({
+      "waresId": this.$route.params.waresId,
+    }).then((res) => {
       if(res.status === 200) {
         if(res.data.code === 200) {
           console.log(res.data.body);
@@ -519,7 +522,7 @@ export default {
           }
         }
       }
-    }).catch((err) => {
+    }, (err) => {
       console.log(err);
     });
   },

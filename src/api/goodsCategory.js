@@ -1,4 +1,5 @@
 import { requested } from './axiosed';
+import {fetch, post} from "./http";
 // 用户获取商品列表
 export async function getGoodsCategoryList(parentId) {
   var url = 'api/cgi//c/category/list';
@@ -34,4 +35,8 @@ export async function addGoodsCategory(form) {
   var url = 'api/cgi/m0/category/create';
   let res = await requested(url,'post',form);
   return res.data;
+}
+
+export function selectGoodsCategoryList() {
+  return fetch('api/cgi/m/category/select');
 }

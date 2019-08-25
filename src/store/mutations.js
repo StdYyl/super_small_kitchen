@@ -5,6 +5,7 @@ import {
   FIND,
   NEXT,
   PRIOR,
+  INITSTEP,
   CLEAR_FROM,
   KEY,
   SET_STORAGE,
@@ -36,6 +37,12 @@ export default {
     } else if (item === 4) {
       state.addKitchenStepInfo.fourth.flag = false;
     }
+  },
+  [INITSTEP](state) {
+    state.addKitchenStepInfo.first.flag = false;
+    state.addKitchenStepInfo.second.flag = false;
+    state.addKitchenStepInfo.third.flag = false;
+    state.addKitchenStepInfo.fourth.flag = false;
   },
   [CHANGE_POS](state, { item }) {
     console.log('change_pos');

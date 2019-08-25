@@ -67,6 +67,9 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {getUserList} from "../../api/user";
+import {fetch, post} from "../../api/http";
+
 export default {
   name: 'MemberManage',
   data() {
@@ -81,22 +84,16 @@ export default {
   },
   methods: {
     handleClick(tab, event) {},
-    selectInfo() {
+    async selectInfo() {
       console.log(this.form.value);
       console.log(this.form.nickname);
       console.log(this.form.registerTel);
-      this.axios.get('api/cgi/m/user/select').then((res) => {
-        if(res.status === 200){
-          if(res.data.code === 200){
-            console.log(res.data.body.list);
-            this.auditedData = res.data.body.list;
-          }
-        }
-      });
+      let auditedData = await getUserList({});
+      this.auditedData = auditedData.data.body.list;
     },
   },
   mounted() {
-    this.axios.get('api/cgi/m/user/select').then((res) => {
+    getUserList({}).then((res) => {
       if(res.status === 200){
         if(res.data.code === 200){
           console.log(res.data.body.list);

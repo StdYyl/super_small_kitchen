@@ -92,6 +92,8 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {getOrderList} from "../../api/order";
+
 export default {
   name: 'OrderManage',
   data() {
@@ -112,15 +114,9 @@ export default {
       console.log('submit!');
     },
   },
-  mounted() {
-    this.axios.get('api/cgi/m/order/select').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          console.log(res.data.body.list);
-          this.auditedData = res.data.body.list;
-        }
-      }
-    });
+  async mounted() {
+    let auditedData = await getOrderList();
+    this.auditedData = auditedData.data.body.list;
   },
   components: {
     BreadCrumb,

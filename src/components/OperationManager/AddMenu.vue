@@ -278,6 +278,11 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {fetch, post} from "../../api/http";
+import {getCookBookDetail, createCookBook} from "../../api/cookBook";
+import {getCookCategoryList} from "../../api/cookCategory";
+import {selectDirectiveSetList} from "../../api/directiveSet";
+import {getGoodsList, getGoodsDetail} from "../../api/goods";
 export default {
   name: 'AddMenu',
   data() {
@@ -337,42 +342,7 @@ export default {
           { required: true, message: '图片必须上传' },
         ],
       },
-      menuOptions: [
-        {
-          label: '营养早餐',
-          options: [{
-            value: '营养粥1',
-            label: '营养粥1',
-          }, {
-            value: '营养粥2',
-            label: '营养粥2',
-          }],
-        },
-        {
-          label: '老人餐',
-          options: [{
-            value: '老人素食',
-            label: '老人素食',
-          }, {
-            value: '老人软食',
-            label: '老人软食',
-          }],
-        },
-        {
-          label: '加班餐',
-          options: [{
-            value: '营养暖胃',
-            label: '营养暖胃',
-          }],
-        },
-        {
-          label: '月子餐',
-          options: [{
-            value: '月子面',
-            label: '月子面',
-          }],
-        }
-      ],
+      menuOptions: [],
       tagsData: [],
       goodsData: [],
       dialogPanVisible: false,
@@ -420,10 +390,9 @@ export default {
               }
             });
           });
-          console.log(steps);
           let cookCategoryIds = [];
           let promise = new Promise((resolve, reject) => {
-            this.axios.get('api/cgi/m/cookbook/category/select').then((res) => {
+            getCookCategoryList().then((res) => {
               console.log(res.data.body);
               let cookCategoryName = '';
               this.menuOptions.forEach((item1) => {
@@ -441,12 +410,20 @@ export default {
                 });
               }
               resolve(cookCategoryIds);
-            }).catch((err) => {
+            }, (err) => {
               reject(err);
             });
           });
           promise.then((cookCategoryIds) => {
-            this.axios.post('api/cgi/m/cookbook/create',{
+            let sort = this.menuOptions[0].value;
+            this.menuOptions.forEach((item1) => {
+              item1.options.forEach((item2) => {
+                if(item2.value === this.ruleForm.menuSort) {
+                  sort = item1.value;
+                }
+              });
+            });
+            createCookBook({
               "cookCategoryIds": cookCategoryIds,
               "name": this.ruleForm.menuName,
               "cover": this.ruleForm.menuImgUrl,
@@ -479,7 +456,7 @@ export default {
                 message: '添加成功',
                 type: 'success'
               });
-            }).catch((err) => {
+            }, (err) => {
               console.log(err);
               this.$message.error('添加失败');
             });
@@ -507,19 +484,16 @@ export default {
       this.ruleForm.menuImgUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.menuImgUrl);
     },
     handleMenuShowAvatarSuccess(res, file) {
       this.ruleForm.menuShowImgUrl = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.menuShowImgUrl);
     },
     handleMenuStepAvatarSuccess(res, file) {
       this.ruleForm.tempMenuStep.stepImg = this.uploadFile.data.key;
       this.uploadFile = {};
       this.host = '';
-      console.log(this.ruleForm.tempMenuStep.stepImg);
     },
     async beforeAvatarUpload(file) {
       const isValidate = file.type === 'image/jpeg' || 'image/png';
@@ -553,16 +527,8 @@ export default {
       }
     },
     fsSignature(file) {
-      return new Promise((resolve, reject) => {
-        this.axios.get('api/cgi/store/imageOssToken?path=vendor').then((res) => {
-          if(res.status === 200) {
-            if(res.data.code === 200){
-              resolve(res);
-            }
-          }
-        }).catch((err) => {
-          reject(err);
-        });
+      return fetch('api/cgi/store/imageOssToken', {
+        "path": 'vendor',
       });
     },
     addStep() {
@@ -580,7 +546,7 @@ export default {
       this.ruleForm.menuStep.splice(idx, 1);
     },
     bindTags(id) {
-      this.axios.get('api/cgi/m/directiveSet/select').then((res) => {
+      selectDirectiveSetList({}).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.tagsData = res.data.body.list;
@@ -600,7 +566,7 @@ export default {
       this.dialogTagVisible = false;
     },
     selectPanList() {
-      this.axios.get('api/cgi/m/goods/select').then((res) => {
+      getGoodsList({}).then((res) => {
         if(res.status === 200){
           if(res.data.code === 200){
             this.goodsData = res.data.body.list;
@@ -610,7 +576,9 @@ export default {
       });
     },
     selectPan(goodsId) {
-      this.axios.get('api/cgi/m2/goods/detail?goodsId='+goodsId).then((res) => {
+      getGoodsDetail({
+        "goodsId": goodsId,
+      }).then((res) => {
         if(res.status === 200) {
           if(res.data.code === 200) {
             console.log(res.data.body);
@@ -633,6 +601,59 @@ export default {
     findImgIdx(step) {
       this.ruleForm.tempMenuStep = step;
     },
+  },
+  mounted() {
+    getCookCategoryList().then((res) => {
+      if(res.status === 200) {
+        if(res.data.code === 200) {
+          res.data.body.forEach((item) => {
+            if(item.name === '营养早餐') {
+              this.menuOptions.push({
+                label: item.name,
+                value: item.sort,
+                options: [{
+                  value: '营养粥1',
+                  label: '营养粥1',
+                }, {
+                  value: '营养粥2',
+                  label: '营养粥2',
+                }],
+              });
+            }else if(item.name === '老人餐') {
+              this.menuOptions.push({
+                label: item.name,
+                value: item.sort,
+                options: [{
+                  value: '老人素食',
+                  label: '老人素食',
+                }, {
+                  value: '老人软食',
+                  label: '老人软食',
+                }],
+              });
+            } else if(item.name === '加班餐') {
+              this.menuOptions.push({
+                label: item.name,
+                value: item.sort,
+                options: [{
+                  value: '营养暖胃',
+                  label: '营养暖胃',
+                }],
+              });
+            } else if(item.name === '月子餐') {
+              this.menuOptions.push({
+                label: item.name,
+                value: item.sort,
+                options: [{
+                  value: '月子面',
+                  label: '月子面',
+                }],
+              });
+            }
+          });
+        }
+      }
+    });
   },
   components: {
     BreadCrumb,

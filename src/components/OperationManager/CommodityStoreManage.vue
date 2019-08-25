@@ -44,6 +44,8 @@
 
 <script>
 import BreadCrumb from '../BreadCrumb';
+import {getWaresList, deleteWares} from "../../api/wares";
+
 export default {
   name: 'CommodityStoreManage',
   data() {
@@ -55,9 +57,7 @@ export default {
     handleClick(tab, event) {},
     deleteWares(waresId) {
       console.log(waresId);
-      this.axios.post('api/cgi/m1/wares/remove',{
-        "waresId": waresId
-      }).then((res) => {
+      deleteWares().then((res) => {
         console.log(res);
         if(res.data.code === 200) {
           this.$message({
@@ -65,7 +65,7 @@ export default {
             type: 'success'
           });
         }
-      }).catch((err) => {
+      }, (err) => {
         console.log(err);
         this.$message.error('删除失败');
       });
@@ -75,15 +75,9 @@ export default {
       this.auditedData.splice(idx, 1);
     },
   },
-  mounted() {
-    this.axios.get('api/cgi/m1/wares/select').then((res) => {
-      if(res.status === 200){
-        if(res.data.code === 200){
-          console.log(res.data.body.list);
-          this.auditedData = res.data.body.list;
-        }
-      }
-    });
+  async mounted() {
+    let auditedData = await getWaresList();
+    this.auditedData = auditedData.data.body.list;
   },
   components: {
     BreadCrumb,
