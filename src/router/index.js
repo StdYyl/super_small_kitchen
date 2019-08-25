@@ -19,6 +19,7 @@ import MenuEdit from '../components/OperationManager/EditMenu';
 import postManagement from '../components/systemManager/postManagement';
 import adminManagement from '../components/systemManager/adminManagement'
 import QRCodeManage from '../components/OperationManager/QRCodeManage';
+import recommendManagement from '../components/systemManager/recommendManagement'
 
 //配置管理
 import Register from '../pages/Register/register';
@@ -318,22 +319,23 @@ export default new VueRouter({
         },
         {
           path:'systemManager/adminManagement',
+          meta:{title:'管理员管理'},
           component: adminManagement,
           children:[
             {
               path:'',
               component: () => import('../components/systemManager/adminComponent/index'),
-              meta:{name:'管理员管理'}
+              meta:{title:'管理员管理'}
             },
             {
               path:'add',
               component:() => import('../components/systemManager/adminComponent/adminAdd'),
-              meta:{name:'管理员添加'}
+              meta:{title:'管理员添加'}
             },
             {
               path:'editor/:id',
               component:() => import('../components/systemManager/adminComponent/editor'),
-              meta:{name:'管理员编辑'}
+              meta:{title:'管理员编辑'}
             },
           ]
         },
@@ -357,6 +359,28 @@ export default new VueRouter({
               component:() => import('../components/systemManager/directiveSet/directiveSetEdit'),
               meta:{title:'指令集编辑'}
             },
+          ]
+        },
+        {
+          path:'systemManager/recommendManagement',
+          component:recommendManagement,
+          meta: { title:'推荐位管理'},
+          children:[
+            {
+              path:'',
+              component:() => import('../components/systemManager/recommended/index'),
+              meta:{title:'推荐位管理'}
+            },
+            {
+              path:'editor/:id',
+              component:() => import('../components/systemManager/recommended/recommendEditor'),
+              meta:{title:'推荐位编辑'}
+            },
+            {
+              path:'add',
+              component:() => import('../components/systemManager/recommended/recommendAdd'),
+              meta:{title:'推荐位添加'}
+            }
           ]
         },
         {

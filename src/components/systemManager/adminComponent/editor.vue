@@ -17,7 +17,7 @@
           <el-option v-for="item in positionList" :label="item.name" :value="item.value" :key="item.name"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="" label="商户选择">
+      <el-form-item prop="" label="商户选择" v-if="this.adminMes.role == 'vendor' || this.adminMes.role == 'seller'">
         <el-button type="primary" @click="dialogTableVisible = true" plain>选择商户</el-button>
         <el-dialog title="商户选择" :visible.sync="dialogTableVisible">
           <el-input v-model="searches" type="text" style="width: 300px" placeholder="商户名称"></el-input>
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-  import { getAdminMes } from  '@/api/admin'
+  import { getAdminMes, reviseAdminMes } from  '@/api/admin'
   export default {
     name: 'editor',
     data() {
@@ -92,11 +92,10 @@
 
     },
     methods: {
-      //更新接口不符？ 没有密码字段获取管理员信息  没有密码
       createdAdmin() {
-        this.$refs.adminMes.validate(valid=>{
+        this.$refs.adminMes.validate(async valid=>{
           if(valid){
-            this.$emit('fun', 'index');
+            await reviseAdminMes(this.adminMes)
             this.$router.go(-1)
           }
         })

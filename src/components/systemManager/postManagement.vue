@@ -1,13 +1,6 @@
 <template>
   <div class="room">
-    <div class="header">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path:'postManagement' }">岗位管理</el-breadcrumb-item>
-        <el-breadcrumb-item>岗位管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <p class="title">岗位管理</p>
-    </div>
+    <headCrumb></headCrumb>
     <div class="bd_mes">
       <p class="title">岗位</p>
       <div class="manager">
@@ -19,9 +12,7 @@
             <div class="permissions">
               <p style="color: rgb(153, 153, 153);font-size: 14px;margin-bottom: 3px">所属权限</p>
               <span v-for="itemed in item.permissions">{{itemed}}</span>
-
             </div>
-
           </div>
         </div>
       </div>
@@ -32,9 +23,12 @@
 </template>
 
 <script>
+  import headCrumb from './breadcrumbS'
   export default {
     name: 'postManagement',
-    props: ['titles'],
+    components:{
+      headCrumb,
+    },
     data() {
       return {
         manager: [
